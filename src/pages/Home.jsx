@@ -6,6 +6,8 @@ import OurPhilosophy from '../components/OurPhilosophy';
 import SustainabilityQuality from '../components/SustainabilityQuality';
 import SocialImpact from '../components/SocialImpact';
 import WhoWeAre from '../components/WhoWeAre';
+import VisionMission from '../components/VisionMission';
+
 const Home = () => {
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', width: '100%' }}>
@@ -29,6 +31,10 @@ const Home = () => {
             
             <div id="who-we-are">
                 <WhoWeAre />
+            </div>
+
+            <div id="vision-mission">
+                <VisionMission />
             </div>
         </div>
     );

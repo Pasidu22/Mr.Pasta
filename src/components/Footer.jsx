@@ -122,31 +122,6 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Vision & Mission Section */}
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto 64px',
-                padding: '40px',
-                background: 'rgba(255, 255, 255, 0.03)',
-                borderRadius: '32px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '48px',
-                border: '1px solid rgba(255, 255, 255, 0.05)'
-            }}>
-                <div>
-                    <h4 style={{ fontSize: '14px', color: 'var(--color-terracotta)', fontWeight: '800', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '2px' }}>Our Vision</h4>
-                    <p style={{ fontSize: '15px', lineHeight: '1.7', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '500', margin: 0 }}>
-                        Our vision - To lead the industry through excellence in value-added manufacturing, providing customers worldwide with superior, nutrient-rich solutions."
-                    </p>
-                </div>
-                <div>
-                    <h4 style={{ fontSize: '14px', color: 'var(--color-terracotta)', fontWeight: '800', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '2px' }}>Our Mission</h4>
-                    <p style={{ fontSize: '15px', lineHeight: '1.7', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '500', margin: 0 }}>
-                        Mission- To deliver exceptional value through innovative manufacturing processes and rigorous quality standards, ensuring our global partners receive nutrient-dense products that enhance lives and drive industry progress."
-                    </p>
-                </div>
-            </div>
 
             {/* Bottom Bar */}
             <div style={{
