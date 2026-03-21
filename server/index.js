@@ -24,6 +24,17 @@ mongoose.connect(MONGODB_URI)
     .then(async () => {
         console.log(`✅ Connected to MongoDB: ${MONGODB_URI.split('@')[1] || 'Local'}`);
         
+        // Clean up legacy indexes if they exist
+        try {
+            const indexes = await User.collection.indexes();
+            if (indexes.find(index => index.name === 'firebaseId_1')) {
+                await User.collection.dropIndex('firebaseId_1');
+                console.log('🧹 Cleaned up legacy firebaseId index');
+            }
+        } catch (err) {
+            // Ignore if index doesn't exist
+        }
+
         // Auto-seed products if the collection is empty
         try {
             const count = await Product.countDocuments();
