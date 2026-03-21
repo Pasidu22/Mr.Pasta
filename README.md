@@ -7,7 +7,6 @@ Authentic pasta delivered to your doorstep.
 - `src/assets/`: Logos, fonts, and images.
 - `src/components/`: Reusable React components (Buttons, Card, etc.).
 - `src/pages/`: Page-level components (Home, Products, etc.).
-- `src/firebase/`: Firebase configuration and authentication logic.
 - `src/utils/`: Helper functions (WhatsApp integration, cart logic).
 
 ## Setup Instructions
