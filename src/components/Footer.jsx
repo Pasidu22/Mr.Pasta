@@ -72,9 +72,9 @@ const Footer = () => {
                 <div>
                     <h4 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '24px' }}>Learn More</h4>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={{ marginBottom: '12px' }}><Link to="/#who-we-are" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Who We Are</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/#sustainability" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Sustainability</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/#social-impact" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Social Impact</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Who We Are</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Vision & Mission</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Social Impact</Link></li>
                         <li style={{ marginBottom: '12px' }}><Link to="/#hero" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Special Offers</Link></li>
                     </ul>
                 </div>

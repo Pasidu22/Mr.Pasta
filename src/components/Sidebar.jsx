@@ -38,6 +38,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { name: 'Products', path: '/products', icon: <ShoppingBasket size={20} /> },
         { name: 'Orders', path: '/orders', icon: <Clock size={20} /> },
         { name: 'Favorites', path: '/favorites', icon: <Heart size={20} /> },
+        { name: 'About Us', path: '/about', icon: <User size={20} /> },
     ];
 
     return (

@@ -14,6 +14,7 @@ import CheckoutModal from './components/CheckoutModal';
 import AuthModal from './components/AuthModal';
 import Settings from './pages/Settings';
 import Admin from './pages/Admin';
+import About from './pages/About';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -92,6 +93,7 @@ function AppContent() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/about" element={<About />} />
         </Routes>
         {!isAdminPage && <Footer />}
       </main>
