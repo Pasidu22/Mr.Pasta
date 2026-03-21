@@ -20,8 +20,13 @@ app.use(express.json());
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mr_pasta';
 mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ Connected to MongoDB'))
-    .catch(err => console.error('❌ MongoDB Connection Error:', err));
+    .then(() => console.log(`✅ Connected to MongoDB: ${MONGODB_URI.split('@')[1] || 'Local'}`))
+    .catch(err => {
+        console.error('❌ MongoDB Connection Error:', err.message);
+        if (err.message.includes('whitelist')) {
+            console.error('👉 TIP: Check your MongoDB Atlas IP Whitelist settings!');
+        }
+    });
 
 // --- API Routes ---
 
@@ -314,24 +319,28 @@ app.post('/api/admin/seed', async (req, res) => {
         
         // Initial Products
         const initialProducts = [
+            // 1. Regular Pasta
             { id: 1, name: 'Wheat Flour Pasta', category: 'Regular Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Quality wheat-based regular pasta.' },
             { id: 2, name: 'Corn Flour Pasta', category: 'Regular Pasta', price: '1000', rating: '4.7', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Delicious corn flour based pasta.' },
             { id: 3, name: 'Moringa Pasta', category: 'Regular Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nutritional moringa infused wheat pasta.' },
             { id: 4, name: 'Nil Katarolu Pasta', category: 'Regular Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Unique nil katarolu flavored pasta.' },
             { id: 5, name: 'Multi-Color Pasta', category: 'Regular Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Vibrant multi-colored pasta varieties.' },
             { id: 6, name: 'Kurakkam Pasta', category: 'Regular Pasta', price: '1000', rating: '4.6', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Traditional kurakkan based wheat pasta.' },
+            
+            // 2. Rice Flour Pasta
             { id: 7, name: 'Moringa Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy rice flour pasta with moringa.' },
             { id: 8, name: 'Nil Katarolu Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nil katarolu flavored rice flour pasta.' },
             { id: 9, name: 'Suwandal Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Authentic suwandal rice flour pasta.' },
             { id: 10, name: 'Kurakkan Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.7', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nutritious kurakkan rice flour pasta.' },
             { id: 11, name: 'Vegetable Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Rice flour pasta blended with vegetables.' },
-            { id: 12, name: 'Jackfruit Flour Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Fiber-rich jackfruit flour pasta.' },
-            { id: 13, name: 'Jackfruit Moringa Pasta', category: 'Gluten-Free', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Jackfruit flour pasta with moringa.' },
-            { id: 14, name: 'Gluten Free Suwandal Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Certified gluten-free suwandal rice pasta.' },
-            { id: 15, name: 'Gluten Free Vegetable Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy gluten-free vegetable pasta.' },
-            { id: 16, name: 'Gluten Free Jackfruit Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Premium gluten-free jackfruit flour pasta.' }
+
+            // 3. Gluten-Free / Wheat-Free
+            { id: 12, name: 'Gluten Free Suwandal Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Certified gluten-free suwandal rice pasta.' },
+            { id: 13, name: 'Gluten Free Vegetable Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy gluten-free vegetable pasta.' },
+            { id: 14, name: 'Gluten Free Jackfruit Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Premium gluten-free jackfruit flour pasta.' },
+            { id: 15, name: 'Jackfruit Flour Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Fiber-rich jackfruit flour pasta.' },
+            { id: 16, name: 'Jackfruit Moringa Pasta', category: 'Gluten-Free', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Jackfruit flour pasta with moringa.' }
         ];
-        // (Truncated for simplicity here, I'll add all in next call if needed or just provide a representative sample)
         // Actually, better to provide all to avoid manual work for user.
         
         await Product.insertMany(initialProducts);

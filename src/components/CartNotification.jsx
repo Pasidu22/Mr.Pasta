@@ -16,6 +16,8 @@ const CartNotification = () => {
         let totalCount = 0;
         let totalPrice = 0;
 
+        if (!Array.isArray(productList)) return { count: 0, price: 0 };
+
         Object.keys(cart).forEach(cartItemId => {
             const product = productList.find(p => p.id === parseInt(cartItemId));
             if (product) {

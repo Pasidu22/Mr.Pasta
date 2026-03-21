@@ -17,12 +17,10 @@ export const products = [
     { id: 10, name: 'Kurakkan Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.7', time: '2-4 Days', image: sampleProduct, desc: 'Nutritious kurakkan rice flour pasta.' },
     { id: 11, name: 'Vegetable Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: sampleProduct, desc: 'Rice flour pasta blended with vegetables.' },
 
-    // 3. Gluten-Free (Including Jackfruit & Specialized)
-    { id: 12, name: 'Jackfruit Flour Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: sampleProduct, desc: 'Fiber-rich jackfruit flour pasta.' },
-    { id: 13, name: 'Jackfruit Moringa Pasta', category: 'Gluten-Free', price: '1000', rating: '4.8', time: '2-4 Days', image: sampleProduct, desc: 'Jackfruit flour pasta with moringa.' },
-
-    // 4. Gluten-Free / Wheat-Free Pasta
-    { id: 14, name: 'Gluten Free Suwandal Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: sampleProduct, desc: 'Certified gluten-free suwandal rice pasta.' },
-    { id: 15, name: 'Gluten Free Vegetable Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: sampleProduct, desc: 'Healthy gluten-free vegetable pasta.' },
-    { id: 16, name: 'Gluten Free Jackfruit Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: sampleProduct, desc: 'Premium gluten-free jackfruit flour pasta.' },
+    // 3. Gluten-Free / Wheat-Free
+    { id: 12, name: 'Gluten Free Suwandal Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: sampleProduct, desc: 'Certified gluten-free suwandal rice pasta.' },
+    { id: 13, name: 'Gluten Free Vegetable Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: sampleProduct, desc: 'Healthy gluten-free vegetable pasta.' },
+    { id: 14, name: 'Gluten Free Jackfruit Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: sampleProduct, desc: 'Premium gluten-free jackfruit flour pasta.' },
+    { id: 15, name: 'Jackfruit Flour Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: sampleProduct, desc: 'Fiber-rich jackfruit flour pasta.' },
+    { id: 16, name: 'Jackfruit Moringa Pasta', category: 'Gluten-Free', price: '1000', rating: '4.8', time: '2-4 Days', image: sampleProduct, desc: 'Jackfruit flour pasta with moringa.' }
 ];

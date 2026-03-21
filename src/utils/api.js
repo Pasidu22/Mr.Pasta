@@ -74,7 +74,12 @@ export const api = {
     // Products
     getProducts: async () => {
         const response = await fetch(`${API_BASE}/products`);
-        return response.json();
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || err.message || 'Failed to fetch products');
+        }
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
     },
 
     addProduct: async (productData) => {

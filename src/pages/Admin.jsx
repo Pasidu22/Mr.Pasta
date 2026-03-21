@@ -36,6 +36,11 @@ const Admin = () => {
             setSettings(settingsData);
         } catch (err) {
             console.error("Dashboard fetch error:", err);
+            if (err.message.includes('buffering timed out')) {
+                alert('Database Connection Error: Could not connect to MongoDB Atlas. Please ensure your IP is whitelisted in Atlas or check your internet connection.');
+            } else {
+                alert('Failed to load dashboard data: ' + err.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -193,7 +198,7 @@ const OrdersTab = ({ orders, onUpdate }) => {
 
 const ProductsTab = ({ products, onUpdate }) => {
     const [editingProduct, setEditingProduct] = useState(null);
-    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', category: 'Regular Pasta', desc: '', image: '/assets/sample_product.png' });
+    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', category: 'Regular Pasta', desc: '', image: '/assets/smaple_product.png' });
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -250,6 +255,7 @@ const ProductsTab = ({ products, onUpdate }) => {
                         <option>Rice Flour Pasta</option>
                         <option>Gluten-Free</option>
                     </select>
+                    <input placeholder="Image URL (e.g. /assets/smaple_product.png)" value={editingProduct?.image || newProduct.image} onChange={e => editingProduct ? setEditingProduct({...editingProduct, image: e.target.value}) : setNewProduct({...newProduct, image: e.target.value})} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
                     <textarea placeholder="Description" value={editingProduct?.desc || newProduct.desc} onChange={e => editingProduct ? setEditingProduct({...editingProduct, desc: e.target.value}) : setNewProduct({...newProduct, desc: e.target.value})} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #eee', minHeight: '80px' }} />
                     <div style={{ display: 'flex', gap: '12px' }}>
                         {editingProduct && <button type="button" onClick={() => setEditingProduct(null)} style={{ flex: 1, padding: '14px', borderRadius: '16px', border: '1px solid #eee', cursor: 'pointer' }}>Cancel</button>}
@@ -316,8 +322,8 @@ const SettingsTab = ({ settings, onUpdate }) => {
 
             <div style={{ background: '#fff1f2', padding: '24px', borderRadius: '24px', border: '1px solid #fecaca' }}>
                 <h4 style={{ margin: '0 0 8px 0', color: '#991b1b' }}>Danger Zone</h4>
-                <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#b91c1c' }}>Re-seed the database to initial state. This will delete all custom products!</p>
-                <button onClick={handleSeed} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>Seed Initial Products</button>
+                <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#b91c1c' }}>Re-seed the database to the 16 original products. This will delete all custom changes!</p>
+                <button onClick={handleSeed} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer' }}>Restore 16 Default Products</button>
             </div>
         </div>
     );
