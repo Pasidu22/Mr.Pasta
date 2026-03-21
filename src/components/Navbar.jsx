@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, TrendingUp, LogOut, ArrowRight } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, TrendingUp, LogOut, ArrowRight, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 
-const Navbar = ({ onCartClick }) => {
+const Navbar = ({ onCartClick, onMenuClick }) => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [location, setLocation] = useState(() => {
@@ -93,8 +93,24 @@ const Navbar = ({ onCartClick }) => {
     };
 
     return (
-        <header className="header" style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flex: 1, position: 'relative' }} ref={searchRef}>
+        <header className="header" style={{ position: 'relative', gap: '12px' }}>
+            <div className="search-container" style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, position: 'relative' }} ref={searchRef}>
+                <button 
+                    onClick={onMenuClick}
+                    className="mobile-menu-btn"
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        display: 'none',
+                        color: 'var(--color-deep-black)',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Menu size={24} />
+                </button>
                 <div className="search-bar" style={{ 
                     border: isSearchFocused ? '1px solid var(--color-terracotta)' : '1px solid transparent',
                     boxShadow: isSearchFocused ? '0 0 0 2px rgba(255, 92, 0, 0.1)' : 'none'
@@ -102,13 +118,13 @@ const Navbar = ({ onCartClick }) => {
                     <Search size={20} color={isSearchFocused ? "var(--color-terracotta)" : "#666"} />
                     <input 
                         type="text" 
-                        placeholder="Search pasta varieties, packet sizes, or wholesale..." 
+                        placeholder="Search..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => setIsSearchFocused(true)}
                     />
                 </div>
-
+                {/* Search Results Overlay ... omitted for brevity but keeping logic ... */}
                 {isSearchFocused && (
                     <div style={{
                         position: 'absolute',
@@ -197,7 +213,7 @@ const Navbar = ({ onCartClick }) => {
                 )}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
                 <div style={{ position: 'relative' }}>
                     <div 
                         onClick={() => {
@@ -208,7 +224,7 @@ const Navbar = ({ onCartClick }) => {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '8px',
-                            padding: '10px 16px',
+                            padding: '10px',
                             borderRadius: 'var(--radius-full)',
                             background: 'var(--color-gray-soft)',
                             fontSize: '14px',
@@ -217,15 +233,15 @@ const Navbar = ({ onCartClick }) => {
                             transition: 'var(--transition)'
                         }}
                     >
-                        <MapPin size={16} color="var(--color-terracotta)" />
-                        <span style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <MapPin size={22} color="var(--color-terracotta)" />
+                        <span className="hide-mobile" style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             Deliver to - {location}
                         </span>
-                        <ChevronDown size={16} />
+                        <ChevronDown size={16} className="hide-mobile" />
                     </div>
 
                     {isLocationOpen && (
-                        <div style={{
+                        <div className="delivery-popup" style={{
                             position: 'absolute',
                             top: '120%',
                             right: 0,
@@ -239,6 +255,22 @@ const Navbar = ({ onCartClick }) => {
                             animation: 'fadeIn 0.2s ease-out',
                             textAlign: 'center'
                         }}>
+                            <button 
+                                onClick={() => setIsLocationOpen(false)}
+                                style={{
+                                    position: 'absolute',
+                                    top: '20px',
+                                    right: '20px',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: '#666',
+                                    padding: '4px'
+                                }}
+                                className="hover-scale"
+                            >
+                                <X size={20} />
+                            </button>
                             <div style={{ 
                                 width: '60px', 
                                 height: '60px', 
@@ -317,7 +349,7 @@ const Navbar = ({ onCartClick }) => {
                 </div>
 
                 {user ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}>
                             <div style={{
                                 width: '36px',
@@ -333,10 +365,11 @@ const Navbar = ({ onCartClick }) => {
                             }}>
                                 {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                             </div>
-                            <span style={{ fontWeight: '600', fontSize: '14px' }}>{user.name || 'User'}</span>
+                            <span className="hide-mobile" style={{ fontWeight: '600', fontSize: '14px' }}>{user.name || 'User'}</span>
                         </Link>
                         <button 
                             onClick={handleLogout}
+                            className="hide-mobile"
                             style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#666', display: 'flex', alignItems: 'center', padding: '4px' }}
                             title="Log Out"
                         >

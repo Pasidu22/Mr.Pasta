@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingBag, ArrowRight, X, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../utils/api';
@@ -8,18 +8,26 @@ const CartNotification = () => {
     const [addedItem, setAddedItem] = useState(null);
     const [cartTotals, setCartTotals] = useState({ count: 0, price: 0 });
     const [products, setProducts] = useState([]);
+    const productsRef = useRef([]);
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Sync ref with state
+    useEffect(() => {
+        productsRef.current = products;
+    }, [products]);
 
     const calculateTotals = (productList) => {
         const cart = JSON.parse(localStorage.getItem('mr_pasta_cart') || '{}');
         let totalCount = 0;
         let totalPrice = 0;
 
-        if (!Array.isArray(productList)) return { count: 0, price: 0 };
+        const listToUse = productList || productsRef.current;
+        if (!Array.isArray(listToUse) || listToUse.length === 0) return { count: 0, price: 0 };
 
         Object.keys(cart).forEach(cartItemId => {
-            const product = productList.find(p => p.id === parseInt(cartItemId));
+            // Robust ID comparison (handle string vs number)
+            const product = listToUse.find(p => p.id.toString() === cartItemId.toString());
             if (product) {
                 totalCount += cart[cartItemId];
                 totalPrice += parseInt(product.price) * cart[cartItemId];
@@ -39,15 +47,8 @@ const CartNotification = () => {
             const { product } = event.detail;
             setAddedItem(product);
             
-            // Re-calculate totals using the cached products
-            setCartTotals(prev => {
-                const newTotals = calculateTotals(products);
-                // If products were empty (first load issue), help it out with the added item
-                if (newTotals.count === 0 && product) {
-                    return { count: 1, price: parseInt(product.price) };
-                }
-                return newTotals;
-            });
+            // Re-calculate totals using the latest products from ref
+            setCartTotals(calculateTotals());
 
             setMessageVisible(true);
             const timer = setTimeout(() => setMessageVisible(false), 3000);
@@ -55,7 +56,7 @@ const CartNotification = () => {
         };
 
         const handleStorageChange = () => {
-            setCartTotals(calculateTotals(products));
+            setCartTotals(calculateTotals());
         };
 
         window.addEventListener('cart-added', handleCartAdded);
@@ -67,10 +68,10 @@ const CartNotification = () => {
         };
     }, []);
 
-    // Don't show the persistent bar on cart or checkout pages
-    const isCartOrCheckout = location.pathname === '/cart' || location.pathname === '/checkout';
+    // Don't show the persistent bar on cart, checkout or admin pages
+    const isHiddenRoute = location.pathname === '/cart' || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
 
-    if (isCartOrCheckout || cartTotals.count === 0) return null;
+    if (isHiddenRoute || cartTotals.count === 0) return null;
 
     return (
         <div style={{

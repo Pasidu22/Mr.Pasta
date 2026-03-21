@@ -12,13 +12,32 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         address: ''
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
+    const [orderSummary, setOrderSummary] = useState({ subtotal: 0, delivery: 0, total: 0 });
 
-    const [settings, setSettings] = useState({ deliveryFee: 250, whatsappNumber: '94729280262' });
+    const [settings, setSettings] = useState({ 
+        deliveryFee: 250, 
+        deliveryChargesEnabled: true,
+        whatsappNumber: '94729280262',
+        bankDetails: ''
+    });
 
     useEffect(() => {
         api.getSettings().then(setSettings).catch(console.error);
 
         if (isOpen) {
+            // Calculate Summary
+            const cart = JSON.parse(localStorage.getItem('mr_pasta_cart') || '{}');
+            api.getProducts().then(products => {
+                let subtotal = 0;
+                Object.keys(cart).forEach(id => {
+                    const product = products.find(p => p.id === parseInt(id));
+                    if (product) subtotal += parseInt(product.price) * cart[id];
+                });
+                const delivery = settings.deliveryChargesEnabled ? (settings.deliveryFee || 250) : 0;
+                setOrderSummary({ subtotal, delivery, total: subtotal + delivery });
+            });
+
             const userProfile = localStorage.getItem('mr_pasta_user');
             if (userProfile) {
                 const data = JSON.parse(userProfile);
@@ -71,7 +90,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         }
 
         const subtotal = total;
-        const deliveryFee = settings.deliveryFee || 250;
+        const deliveryFee = settings.deliveryChargesEnabled ? (settings.deliveryFee || 250) : 0;
         const grandTotal = subtotal + deliveryFee;
 
         const orderId = `MP-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -84,7 +103,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             subtotal,
             delivery: deliveryFee,
             total: grandTotal,
-            status: 'Placed',
+            status: 'pending',
             customer: formData
         };
 
@@ -99,7 +118,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             try {
                 const userObj = JSON.parse(savedUser);
                 const currentUserId = userObj.userId || userObj.uid;
-                api.createOrder({
+                await api.createOrder({
                     userId: currentUserId,
                     items: orderItems,
                     total: grandTotal,
@@ -109,11 +128,13 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                         address: formData.address,
                         email: userObj.email || ''
                     },
-                    paymentMethod: 'Cash on Delivery',
+                    paymentMethod: paymentMethod,
                     transactionId: orderId
-                }).catch(err => console.error("Order sync error:", err));
-            } catch (e) {
-                console.error("User parsing error during order sync:", e);
+                });
+                console.log("✅ Order synced to database successfully");
+            } catch (err) {
+                console.error("❌ Order sync error:", err);
+                // We still proceed to WhatsApp so the order isn't lost for the business
             }
         }
 
@@ -127,6 +148,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             `\n\n*Subtotal:* Rs. ${subtotal}\n` +
             `*Delivery:* Rs. ${deliveryFee}\n` +
             `*Total:* *Rs. ${grandTotal}*\n\n` +
+            `*Payment Method:* ${paymentMethod}\n\n` +
             `_Please confirm my order. Thank you!_`;
 
         const encodedMessage = encodeURIComponent(message);
@@ -165,13 +187,15 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             <div style={{
                 background: 'white',
                 width: '90%',
-                maxWidth: '540px',
-                borderRadius: '32px',
-                padding: '32px',
+                maxWidth: '500px',
+                maxHeight: '92vh', // Ensure it fits the window
+                overflowY: 'auto', // Allow scrolling if content is too tall
+                borderRadius: '24px', // Slightly smaller radius
+                padding: '24px', // Reduced padding
                 position: 'relative',
                 boxShadow: '0 25px 50px rgba(0,0,0,0.2)',
                 animation: 'slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-            }} onClick={e => e.stopPropagation()}>
+            }} onClick={e => e.stopPropagation()} className="hide-scrollbar">
                 
                 <button onClick={onClose} style={{ position: 'absolute', top: '24px', right: '24px', background: '#f5f5f5', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} className="hover-scale">
                     <X size={20} />
@@ -237,11 +261,11 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                     </div>
                 ) : (
                     <>
-                        <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '32px', letterSpacing: '-1px' }}>Checkout</h2>
+                        <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '16px', letterSpacing: '-0.5px' }}>Checkout</h2>
                         
-                        <form onSubmit={handlePreOrder} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        <form onSubmit={handlePreOrder} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ fontSize: '14px', fontWeight: '700', color: '#444' }}>Delivery Information</label>
+                                <label style={{ fontSize: '13px', fontWeight: '700', color: '#444' }}>Delivery Information</label>
                                 <div style={{ position: 'relative' }}>
                                     <User size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
                                     <input 
@@ -276,31 +300,67 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
-                                <label style={{ fontSize: '14px', fontWeight: '700', color: '#444' }}>Payment Method</label>
-                                <div style={{ display: 'flex', gap: '12px' }}>
-                                    <div style={{ flex: 1, padding: '16px', borderRadius: '16px', border: '2px solid var(--color-terracotta)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                        <CreditCard size={24} color="var(--color-terracotta)" />
-                                        <span style={{ fontSize: '12px', fontWeight: '700' }}>Cash on Delivery</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                                <label style={{ fontSize: '13px', fontWeight: '700', color: '#444' }}>Payment Method</label>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <div 
+                                        onClick={() => setPaymentMethod('Cash on Delivery')}
+                                        style={{ flex: 1, padding: '12px 10px', borderRadius: '14px', border: paymentMethod === 'Cash on Delivery' ? '2px solid var(--color-terracotta)' : '1px solid #eee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
+                                    >
+                                        <CreditCard size={18} color={paymentMethod === 'Cash on Delivery' ? "var(--color-terracotta)" : "#999"} strokeWidth={2.5} />
+                                        <span style={{ fontSize: '10px', fontWeight: '800' }}>Cash</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px', borderRadius: '16px', border: '1px solid #eee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'not-allowed', opacity: 0.5 }}>
-                                        <CreditCard size={24} color="#999" />
-                                        <span style={{ fontSize: '12px', fontWeight: '700' }}>Card Payment</span>
+                                    <div 
+                                        onClick={() => setPaymentMethod('Bank Transfer')}
+                                        style={{ flex: 1, padding: '12px 10px', borderRadius: '14px', border: paymentMethod === 'Bank Transfer' ? '2px solid var(--color-terracotta)' : '1px solid #eee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', cursor: 'pointer' }}
+                                    >
+                                        <CreditCard size={18} color={paymentMethod === 'Bank Transfer' ? "var(--color-terracotta)" : "#999"} strokeWidth={2.5} />
+                                        <span style={{ fontSize: '10px', fontWeight: '800' }}>Bank</span>
                                     </div>
+                                    <div style={{ flex: 1, padding: '12px 10px', borderRadius: '14px', border: '1px solid #eee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', cursor: 'not-allowed', opacity: 0.5 }}>
+                                        <CreditCard size={18} color="#999" strokeWidth={2} />
+                                        <span style={{ fontSize: '10px', fontWeight: '800' }}>Card</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {paymentMethod === 'Bank Transfer' && settings.bankDetails && (
+                                <div style={{ background: '#f0f9ff', padding: '16px', borderRadius: '16px', border: '1px solid #bae6fd' }}>
+                                    <p style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: '700', color: '#0369a1' }}>Bank Account Details:</p>
+                                    <p style={{ margin: 0, fontSize: '13px', color: '#0c4a6e', whiteSpace: 'pre-line' }}>{settings.bankDetails}</p>
+                                </div>
+                            )}
+
+                            {/* Order Summary Display */}
+                            <div style={{ background: '#f9f9f9', padding: '16px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#666' }}>
+                                    <span>Items Subtotal</span>
+                                    <span>Rs. {orderSummary.subtotal}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#666' }}>
+                                    <span>Delivery Charges</span>
+                                    <span style={{ color: orderSummary.delivery === 0 ? '#10b981' : '#666', fontWeight: orderSummary.delivery === 0 ? '700' : '400' }}>
+                                        {orderSummary.delivery === 0 ? 'FREE' : `Rs. ${orderSummary.delivery}`}
+                                    </span>
+                                </div>
+                                <div style={{ height: '1px', background: '#eee', margin: '2px 0' }} />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: '800' }}>
+                                    <span>Total Amount</span>
+                                    <span style={{ color: 'var(--color-terracotta)' }}>Rs. {orderSummary.total}</span>
                                 </div>
                             </div>
 
                             <button 
                                 type="submit"
                                 style={{
-                                    marginTop: '20px',
-                                    padding: '18px',
+                                    marginTop: '8px',
+                                    padding: '16px',
                                     background: 'var(--color-deep-black)',
                                     color: 'white',
                                     border: 'none',
-                                    borderRadius: '20px',
+                                    borderRadius: '16px',
                                     fontWeight: '800',
-                                    fontSize: '18px',
+                                    fontSize: '16px',
                                     cursor: 'pointer'
                                 }}
                                 className="hover-scale"

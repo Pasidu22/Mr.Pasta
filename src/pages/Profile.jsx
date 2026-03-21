@@ -60,7 +60,8 @@ const Profile = () => {
                     navigate('/');
                 }
             } else {
-                // Not logged in - redirect to home
+                // Not logged in - redirect to home and prompt login
+                window.dispatchEvent(new CustomEvent('open-auth-modal'));
                 navigate('/');
             }
             setLoading(false);
@@ -138,7 +139,7 @@ const Profile = () => {
                             fontSize: '32px',
                             fontWeight: '700'
                         }}>
-                            {user.name.charAt(0).toUpperCase()}
+                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                         </div>
                         <div>
                             <h2 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 4px 0' }}>{user.name}</h2>

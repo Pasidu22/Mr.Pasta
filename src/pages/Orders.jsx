@@ -11,32 +11,38 @@ const Orders = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             const savedUser = localStorage.getItem('mr_pasta_user');
+            
             if (savedUser) {
-                const userObj = JSON.parse(savedUser);
-                const currentUserId = userObj.userId || userObj.uid;
-                
-                api.getOrders(currentUserId).then(dbOrders => {
-                    if (dbOrders && dbOrders.length > 0) {
-                        setOrders(dbOrders);
-                    } else {
-                        const savedOrders = JSON.parse(localStorage.getItem('mr_pasta_orders') || '[]');
-                        setOrders(savedOrders.sort((a, b) => new Date(b.date) - new Date(a.date)));
+                try {
+                    const userObj = JSON.parse(savedUser);
+                    const currentUserId = userObj.userId || userObj.uid;
+                    const dbOrders = await api.getOrders(currentUserId);
+                    
+                    if (Array.isArray(dbOrders)) {
+                        setOrders(dbOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
                     }
-                    setLoading(false);
-                }).catch(err => {
+                } catch (err) {
                     console.error("Failed to fetch orders from DB:", err);
-                    const savedOrders = JSON.parse(localStorage.getItem('mr_pasta_orders') || '[]');
-                    setOrders(savedOrders.sort((a, b) => new Date(b.date) - new Date(a.date)));
-                });
-            } else {
-                const savedOrders = JSON.parse(localStorage.getItem('mr_pasta_orders') || '[]');
-                setOrders(savedOrders.sort((a, b) => new Date(b.date) - new Date(a.date)));
+                }
             }
             setLoading(false);
         };
 
         fetchOrders();
     }, []);
+
+    const getStatusStyle = (status) => {
+        const s = status?.toLowerCase() || 'pending';
+        switch (s) {
+            case 'pending': return { bg: '#f1f5f9', text: '#64748b' };
+            case 'confirmed': return { bg: '#fff7ed', text: '#ea580c' };
+            case 'processing': return { bg: '#fff7ed', text: '#ea580c' }; // Keep for backward compatibility
+            case 'shipped': return { bg: '#f5f3ff', text: '#7c3aed' };
+            case 'delivered': return { bg: '#f0fdf4', text: '#16a34a' };
+            case 'cancelled': return { bg: '#fef2f2', text: '#dc2626' };
+            default: return { bg: '#f1f5f9', text: '#64748b' };
+        }
+    };
 
     if (loading) {
         return (
@@ -94,67 +100,50 @@ const Orders = () => {
                     <ArrowLeft size={24} />
                 </button>
                 <h1 style={{ fontSize: '32px', fontWeight: '800', margin: 0, letterSpacing: '-1.5px', flex: 1 }}>My Order History</h1>
-                {orders.length > 0 && (
-                    <button 
-                        onClick={() => {
-                            if (window.confirm('Are you sure you want to clear your local order history? This will not affect your account on our servers.')) {
-                                localStorage.removeItem('mr_pasta_orders');
-                                setOrders([]);
-                            }
-                        }}
-                        style={{ 
-                            padding: '10px 20px', 
-                            background: '#fff', 
-                            border: '1px solid #eee', 
-                            borderRadius: '12px', 
-                            fontSize: '13px', 
-                            fontWeight: '700', 
-                            color: '#ff4d4d',
-                            cursor: 'pointer' 
-                        }}
-                        className="hover-scale"
-                    >
-                        Clear History
-                    </button>
-                )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                {orders.map((order) => (
-                    <div key={order.id} style={{
-                        background: 'white',
-                        borderRadius: '24px',
-                        padding: '24px',
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-                        border: '1px solid var(--color-gray-border)',
-                        transition: 'var(--transition)'
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px', borderBottom: '1px solid #f5f5f5', paddingBottom: '16px' }}>
-                            <div>
-                                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-deep-black)', marginBottom: '4px' }}>
-                                    Order {order.id || order._id}
+                {orders.map((order) => {
+                    const statusStyle = getStatusStyle(order.status);
+                    const isLocalOnly = !order._id;
+
+                    return (
+                        <div key={order.id || order._id} style={{
+                            background: 'white',
+                            borderRadius: '24px',
+                            padding: '24px',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+                            border: '1px solid var(--color-gray-border)',
+                            transition: 'var(--transition)'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px', borderBottom: '1px solid #f5f5f5', paddingBottom: '16px' }}>
+                                <div>
+                                    <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--color-deep-black)', marginBottom: '4px' }}>
+                                        Order #{order.id || order.transactionId}
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '16px', color: '#888', fontSize: '13px' }}>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <Calendar size={14} /> {new Date(order.date || order.createdAt).toLocaleDateString()}
+                                        </span>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <Clock size={14} /> {new Date(order.date || order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div style={{ display: 'flex', gap: '16px', color: '#888', fontSize: '13px' }}>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <Calendar size={14} /> {new Date(order.date || order.createdAt).toLocaleDateString()}
-                                    </span>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <Clock size={14} /> {new Date(order.date || order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <div style={{ 
+                                        background: statusStyle.bg, 
+                                        color: statusStyle.text, 
+                                        padding: '6px 14px', 
+                                        borderRadius: '10px', 
+                                        fontSize: '13px', 
+                                        fontWeight: '800',
+                                        textTransform: 'capitalize'
+                                    }}>
+                                        {order.status || 'pending'}
+                                    </div>
                                 </div>
                             </div>
-                            <div style={{ 
-                                background: '#e6f4ea', 
-                                color: '#1e7e34', 
-                                padding: '6px 14px', 
-                                borderRadius: 'full', 
-                                fontSize: '13px', 
-                                fontWeight: '700',
-                                textTransform: 'capitalize'
-                            }}>
-                                {order.status || 'Placed'}
-                            </div>
-                        </div>
 
                         <div style={{ marginBottom: '20px' }}>
                             {order.items && order.items.map((item, idx) => {
@@ -177,7 +166,8 @@ const Orders = () => {
                             </div>
                         </div>
                     </div>
-                ))}
+                );
+            })}
             </div>
         </div>
     );

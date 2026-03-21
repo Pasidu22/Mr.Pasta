@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingBasket, Clock, User, Heart, Settings, LogOut } from 'lucide-react';
+import { Home, ShoppingBasket, Clock, User, Heart, Settings, LogOut, X } from 'lucide-react';
 import logo from '../assets/logo.jpg';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
     const [user, setUser] = React.useState(null);
 
@@ -41,12 +41,28 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className="sidebar">
-            <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <img src={logo} alt="Mr. Pasta Logo" style={{ height: '32px', width: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                <h2 style={{ color: 'var(--color-terracotta)', fontSize: '1.2rem', fontFamily: 'var(--font-accent)', margin: 0 }}>
-                    MR. PASTA
-                </h2>
+        <aside className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
+            <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img src={logo} alt="Mr. Pasta Logo" style={{ height: '32px', width: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <h2 style={{ color: 'var(--color-terracotta)', fontSize: '1.2rem', fontFamily: 'var(--font-accent)', margin: 0 }}>
+                        MR. PASTA
+                    </h2>
+                </div>
+                <button 
+                    onClick={onClose} 
+                    className="mobile-menu-btn"
+                    style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        padding: '4px',
+                        display: 'none', // Hidden on desktop
+                        color: '#666'
+                    }}
+                >
+                    <X size={24} />
+                </button>
             </div>
 
             <nav>
@@ -55,6 +71,7 @@ const Sidebar = () => {
                         <li key={item.name}>
                             <Link 
                                 to={item.path} 
+                                onClick={onClose}
                                 style={{ 
                                     display: 'flex', 
                                     alignItems: 'center', 
@@ -79,28 +96,59 @@ const Sidebar = () => {
 
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <li>
-                        <Link 
-                            to="/profile" 
-                            style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '12px', 
-                                padding: '12px 16px', 
-                                textDecoration: 'none', 
-                                color: location.pathname === '/profile' ? 'var(--color-terracotta)' : 'inherit',
-                                backgroundColor: location.pathname === '/profile' ? 'var(--color-gray-soft)' : 'transparent',
-                                borderRadius: 'var(--radius-md)',
-                                fontWeight: location.pathname === '/profile' ? '600' : '400',
-                                transition: 'var(--transition)'
-                            }}
-                        >
-                            <User size={20} />
-                            <span>Profile</span>
-                        </Link>
+                        {user ? (
+                            <Link 
+                                to="/profile" 
+                                onClick={onClose}
+                                style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '12px', 
+                                    padding: '12px 16px', 
+                                    textDecoration: 'none', 
+                                    color: location.pathname === '/profile' ? 'var(--color-terracotta)' : 'inherit',
+                                    backgroundColor: location.pathname === '/profile' ? 'var(--color-gray-soft)' : 'transparent',
+                                    borderRadius: 'var(--radius-md)',
+                                    fontWeight: location.pathname === '/profile' ? '600' : '400',
+                                    transition: 'var(--transition)'
+                                }}
+                            >
+                                <User size={20} />
+                                <span>Profile</span>
+                            </Link>
+                        ) : (
+                            <button 
+                                onClick={() => {
+                                    onClose();
+                                    window.dispatchEvent(new CustomEvent('open-auth-modal'));
+                                }}
+                                style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '12px', 
+                                    padding: '12px 16px', 
+                                    width: '100%',
+                                    border: 'none',
+                                    background: 'none',
+                                    cursor: 'pointer',
+                                    color: 'inherit',
+                                    borderRadius: 'var(--radius-md)',
+                                    fontFamily: 'inherit',
+                                    fontSize: '16px',
+                                    textAlign: 'left',
+                                    transition: 'var(--transition)'
+                                }}
+                                className="hover-scale"
+                            >
+                                <User size={20} />
+                                <span>Sign Up / Login</span>
+                            </button>
+                        )}
                     </li>
                     <li>
                         <Link 
                             to="/settings" 
+                            onClick={onClose}
                             style={{ 
                                 display: 'flex', 
                                 alignItems: 'center', 
@@ -124,7 +172,10 @@ const Sidebar = () => {
             {user && (
                 <div style={{ marginTop: 'auto', position: 'absolute', bottom: '24px', left: '24px', right: '24px' }}>
                     <button 
-                        onClick={handleLogout}
+                        onClick={() => {
+                            handleLogout();
+                            onClose();
+                        }}
                         style={{ 
                             display: 'flex', 
                             alignItems: 'center', 

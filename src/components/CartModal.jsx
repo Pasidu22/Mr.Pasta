@@ -32,7 +32,7 @@ const CartModal = ({ isOpen, onClose, onCheckout }) => {
             });
 
             setCartItems(items);
-            const delivery = subtotal > 0 ? (fetchedSettings.deliveryFee || 250) : 0;
+            const delivery = (subtotal > 0 && fetchedSettings.deliveryChargesEnabled !== false) ? (fetchedSettings.deliveryFee || 250) : 0;
             setTotals({ subtotal, delivery, total: subtotal + delivery });
         } catch (err) {
             console.error("Cart load error:", err);
@@ -233,7 +233,17 @@ const CartModal = ({ isOpen, onClose, onCheckout }) => {
                 {/* Footer */}
                 {cartItems.length > 0 && !showAuthPrompt && (
                     <div style={{ padding: '24px 32px', background: 'var(--color-deep-black)', color: 'white' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: '800' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '14px', opacity: 0.8, fontWeight: '600' }}>
+                            <span>Subtotal</span>
+                            <span>Rs. {totals.subtotal.toLocaleString()}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '14px', opacity: 0.8, fontWeight: '600' }}>
+                            <span>Delivery Fee</span>
+                            <span style={{ color: totals.delivery === 0 ? '#10b981' : 'white' }}>
+                                {totals.delivery === 0 ? 'FREE' : `Rs. ${totals.delivery.toLocaleString()}`}
+                            </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '20px', fontWeight: '800', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
                             <span>Total</span>
                             <span style={{ color: 'var(--color-terracotta)' }}>Rs. {totals.total.toLocaleString()}</span>
                         </div>

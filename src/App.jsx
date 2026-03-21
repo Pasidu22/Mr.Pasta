@@ -21,8 +21,15 @@ function AppContent() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAdminPage, setIsAdminPage] = useState(false);
   const location = useLocation();
-  const isAdminPage = location.pathname === '/admin';
+
+  useEffect(() => {
+    setIsAdminPage(location.pathname.startsWith('/admin'));
+    // Close sidebar on mobile when navigating
+    setIsSidebarOpen(false);
+  }, [location]);
 
   useEffect(() => {
     const handleToggleCart = () => setIsCartOpen(true);
@@ -45,8 +52,16 @@ function AppContent() {
   return (
     <div className={`app-layout ${isAdminPage ? 'admin-layout' : ''}`}>
       <ScrollToTop />
-      {!isAdminPage && <Sidebar />}
-      {!isAdminPage && <Navbar onCartClick={() => setIsCartOpen(true)} />}
+      {!isAdminPage && (
+        <>
+          <div 
+            className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
+            onClick={() => setIsSidebarOpen(false)}
+          />
+          <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        </>
+      )}
+      {!isAdminPage && <Navbar onCartClick={() => setIsCartOpen(true)} onMenuClick={() => setIsSidebarOpen(true)} />}
       <CartNotification />
       
       <CartModal 

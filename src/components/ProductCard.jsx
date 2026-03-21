@@ -2,8 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Heart, Star, Plus } from 'lucide-react';
 import { api } from '../utils/api';
 
-const ProductCard = ({ id, name, price, rating, time, image, desc }) => {
+const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time, image, desc }) => {
     const [isFavorite, setIsFavorite] = useState(false);
+    const [currentRating, setCurrentRating] = useState(parseFloat(initialRating) || 5.0);
+    const [isRatingOpen, setIsRatingOpen] = useState(false);
+    const [hoverRating, setHoverRating] = useState(0);
+
+    useEffect(() => {
+        setCurrentRating(parseFloat(initialRating));
+    }, [initialRating]);
 
     useEffect(() => {
         const favorites = JSON.parse(localStorage.getItem('mr_pasta_favorites') || '[]');
@@ -17,6 +24,20 @@ const ProductCard = ({ id, name, price, rating, time, image, desc }) => {
         window.addEventListener('storage', handleStorageChange);
         return () => window.removeEventListener('storage', handleStorageChange);
     }, [id]);
+
+    const handleRate = async (score) => {
+        try {
+            const updated = await api.rateProduct(id, score);
+            if (updated) {
+                setCurrentRating(updated.rating);
+                // Optional: show a small toast or success msg
+            }
+            setIsRatingOpen(false);
+        } catch (err) {
+            console.error("Rating Error:", err);
+            setIsRatingOpen(false);
+        }
+    };
 
     const toggleFavorite = (e) => {
         e.preventDefault();
@@ -79,7 +100,7 @@ const ProductCard = ({ id, name, price, rating, time, image, desc }) => {
     };
 
     return (
-        <div id={`product-${id}`} className="product-card hover-lift" style={{
+        <div id={`product-${id}`} className="product-card hover-lift" title={desc} style={{
             background: 'var(--glass-bg)',
             backdropFilter: 'var(--glass-blur)',
             border: '1px solid var(--glass-border)',
@@ -87,8 +108,9 @@ const ProductCard = ({ id, name, price, rating, time, image, desc }) => {
             padding: '16px',
             transition: 'var(--transition)',
             position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)'
+            overflow: 'visible', // Allow rating overlay to pop out
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
+            zIndex: isRatingOpen ? 100 : 1
         }}>
             <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '16px' }}>
                 <img
@@ -132,18 +154,55 @@ const ProductCard = ({ id, name, price, rating, time, image, desc }) => {
             <div style={{ padding: '0 4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                     <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0, color: 'var(--color-deep-black)', letterSpacing: '-0.3px' }}>{name}</h3>
-                    <div style={{
-                        background: 'rgba(0, 0, 0, 0.05)',
-                        padding: '4px 8px',
-                        borderRadius: 'full',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        fontSize: '13px',
-                        fontWeight: '700'
-                    }}>
-                        <span>{rating}</span>
-                        <Star size={14} fill="black" />
+                    <div 
+                        onClick={(e) => { e.stopPropagation(); setIsRatingOpen(!isRatingOpen); }}
+                        style={{ position: 'relative' }}
+                    >
+                        <div style={{
+                            background: 'rgba(0, 0, 0, 0.05)',
+                            padding: '4px 8px',
+                            borderRadius: 'full',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontSize: '13px',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                        }}>
+                            <span>{currentRating ? currentRating.toFixed(1) : '5.0'}</span>
+                            <Star size={14} fill="black" />
+                        </div>
+
+                        {isRatingOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                right: 0,
+                                background: 'white',
+                                padding: '12px',
+                                borderRadius: '16px',
+                                boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                                display: 'flex',
+                                gap: '4px',
+                                zIndex: 10,
+                                marginTop: '8px',
+                                border: '1px solid #f0f0f0',
+                                animation: 'fadeIn 0.2s ease-out'
+                            }}>
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <Star 
+                                        key={star}
+                                        size={18}
+                                        style={{ cursor: 'pointer', transition: '0.2s' }}
+                                        fill={(hoverRating || 0) >= star ? '#FF5C00' : 'none'}
+                                        color={(hoverRating || 0) >= star ? '#FF5C00' : '#ccc'}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                        onClick={() => handleRate(star)}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 

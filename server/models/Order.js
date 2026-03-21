@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    userId: { type: String, required: true }, // Firebase UID
+    userId: { type: String }, // Firebase UID
     items: [
         {
             id: { type: Number, required: true },
@@ -13,7 +13,7 @@ const orderSchema = new mongoose.Schema({
         }
     ],
     total: { type: Number, required: true },
-    status: { type: String, default: 'pending', enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] },
+    status: { type: String, default: 'pending', enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'] },
     customerInfo: {
         name: { type: String, required: true },
         phone: { type: String, required: true },

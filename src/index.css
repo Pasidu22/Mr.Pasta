@@ -134,6 +134,89 @@ body {
   max-width: 100%;
 }
 
+/* Sidebar Overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .app-layout {
+    grid-template-areas: 
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 10000;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+
+  .sidebar-overlay {
+    z-index: 9500;
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
+  }
+
+  .header {
+    padding: 0 20px;
+  }
+
+  .main-content {
+    padding: 24px 20px;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .nav-actions {
+    gap: 8px !important;
+  }
+
+  .search-container {
+    padding-right: 0 !important;
+  }
+
+  .delivery-popup {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90% !important;
+    min-width: unset !important;
+    max-width: 400px !important;
+    margin: 0 !important;
+  }
+}
+
 .admin-layout {
   grid-template-areas: "main";
   grid-template-columns: 1fr;
@@ -143,6 +226,21 @@ body {
 .admin-layout .main-content {
   padding: 0;
   min-height: 100vh;
+}
+
+.admin-products-layout {
+  display: grid; 
+  grid-template-columns: 1fr 1.2fr; 
+  gap: 40px; 
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .admin-products-layout {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 32px;
+  }
 }
 
 /* UI Components */
@@ -202,6 +300,15 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
 }
 
 /* Enhanced Banners */

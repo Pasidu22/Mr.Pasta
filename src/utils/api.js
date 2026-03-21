@@ -53,6 +53,10 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         });
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || err.message || 'Failed to create order');
+        }
         return response.json();
     },
 
@@ -88,6 +92,16 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productData)
         });
+        if (!response.ok) {
+            let errorMsg = 'Failed to add product';
+            try {
+                const err = await response.json();
+                errorMsg = err.error || err.message || errorMsg;
+            } catch (e) {
+                if (response.status === 413) errorMsg = 'Image file is too large for the server';
+            }
+            throw new Error(errorMsg);
+        }
         return response.json();
     },
 
@@ -97,12 +111,31 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productData)
         });
+        if (!response.ok) {
+            let errorMsg = 'Failed to update product';
+            try {
+                const err = await response.json();
+                errorMsg = err.error || err.message || errorMsg;
+            } catch (e) {
+                if (response.status === 413) errorMsg = 'Image file is too large for the server';
+            }
+            throw new Error(errorMsg);
+        }
         return response.json();
     },
 
     deleteProduct: async (productId) => {
         const response = await fetch(`${API_BASE}/products/${productId}`, {
             method: 'DELETE'
+        });
+        return response.json();
+    },
+
+    rateProduct: async (productId, rating) => {
+        const response = await fetch(`${API_BASE}/products/${productId}/rate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating })
         });
         return response.json();
     },
