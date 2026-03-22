@@ -9,6 +9,11 @@ const OTP = require('./models/OTP');
 const Product = require('./models/Product');
 const Settings = require('./models/Settings');
 const nodemailer = require('nodemailer');
+const twilio = require('twilio');
+
+const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN 
+    ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN) 
+    : null;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -124,6 +129,20 @@ app.post('/api/auth/send-otp', async (req, res) => {
                 html: `<h2 style="color:#FF5C00">Mr. Pasta</h2><p>Your code is: <b>${otpCode}</b></p>`
             };
             await transporter.sendMail(mailOptions);
+        } else if (type === 'phone' && twilioClient && process.env.TWILIO_PHONE_NUMBER) {
+            // Format phone number for Twilio (Add +94 if missing)
+            let formattedPhone = identifier;
+            if (!formattedPhone.startsWith('+')) {
+                if (formattedPhone.startsWith('0')) formattedPhone = formattedPhone.substring(1);
+                formattedPhone = `+94${formattedPhone}`;
+            }
+
+            await twilioClient.messages.create({
+                body: `Your Mr. Pasta verification code is: ${otpCode}. Tasty Healthy Happy!`,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: formattedPhone
+            });
+            console.log(`✅ [Twilio SMS] Sent OTP to ${formattedPhone}`);
         } else {
             console.log(`✅ [MOCK SMS] OTP: ${otpCode}`);
         }
