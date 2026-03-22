@@ -43,6 +43,26 @@ function AppContent() {
     window.addEventListener('toggle-cart', handleToggleCart);
     window.addEventListener('toggle-checkout', handleToggleCheckout);
     window.addEventListener('open-auth-modal', handleOpenAuth);
+
+    // Session Expiration Check (1 hour)
+    const checkSession = () => {
+        const user = localStorage.getItem('mr_pasta_user');
+        const loginTime = localStorage.getItem('mr_pasta_login_time');
+        
+        if (user && loginTime) {
+            const now = Date.now();
+            const ONE_HOUR = 1 * 60 * 60 * 1000;
+            
+            if (now - parseInt(loginTime) > ONE_HOUR) {
+                console.log("Session expired. Logging out...");
+                localStorage.removeItem('mr_pasta_user');
+                localStorage.removeItem('mr_pasta_login_time');
+                window.location.reload();
+            }
+        }
+    };
+    checkSession();
+
     return () => {
         window.removeEventListener('toggle-cart', handleToggleCart);
         window.removeEventListener('toggle-checkout', handleToggleCheckout);

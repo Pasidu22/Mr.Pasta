@@ -206,6 +206,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     phone: user.phoneNumber,
                     address: user.location
                 }));
+                localStorage.setItem('mr_pasta_login_time', Date.now().toString());
                 
                 // Save for future profile page lookups
                 localStorage.setItem(`user_profile_${user.userId}`, JSON.stringify({
