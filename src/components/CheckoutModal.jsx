@@ -14,6 +14,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
     const [orderSummary, setOrderSummary] = useState({ subtotal: 0, delivery: 0, total: 0 });
+    const [whatsappUrl, setWhatsappUrl] = useState('');
 
     const [settings, setSettings] = useState({ 
         deliveryFee: 250, 
@@ -153,7 +154,8 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
         const encodedMessage = encodeURIComponent(message);
         const whatsappNumber = settings.whatsappNumber || "94729280262";
-        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        const finalUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        setWhatsappUrl(finalUrl);
 
         // Clear Cart
         localStorage.setItem('mr_pasta_cart', '{}');
@@ -161,12 +163,6 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
         // Redirection and UI Update
         setIsOrdered(true);
-        
-        setTimeout(() => {
-            window.open(whatsappUrl, '_blank');
-            onClose();
-            setIsOrdered(false);
-        }, 3000);
     };
 
     return (
@@ -202,23 +198,50 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                 </button>
 
                 {isOrdered ? (
-                    <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                    <div style={{ textAlign: 'center', padding: '20px 0' }}>
                         <div style={{ color: '#4BB543', marginBottom: '20px' }}>
                             <CheckCircle2 size={80} style={{ margin: '0 auto' }} />
                         </div>
                         <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '10px' }}>Order Placed!</h2>
-                        <p style={{ color: '#666', fontSize: '16px', marginBottom: '24px' }}>Opening WhatsApp to send details...</p>
-                        <div style={{ 
-                            padding: '12px', 
-                            background: '#f0fdf4', 
-                            borderRadius: '12px', 
-                            display: 'inline-block',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            color: '#166534'
-                        }}>
-                           Redirecting in a moment!
-                        </div>
+                        <p style={{ color: '#666', fontSize: '15px', marginBottom: '24px' }}>
+                            Your order has been saved locally. <br />
+                            Please click below to send it to us via WhatsApp.
+                        </p>
+                        
+                        <a 
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => {
+                                setTimeout(() => onClose(), 1000);
+                            }}
+                            style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '10px',
+                                padding: '18px', 
+                                background: '#25D366', // WhatsApp Green
+                                color: 'white',
+                                borderRadius: '16px', 
+                                fontSize: '16px',
+                                fontWeight: '800',
+                                textDecoration: 'none',
+                                marginBottom: '16px',
+                                boxShadow: '0 10px 20px rgba(37, 211, 102, 0.2)'
+                            }}
+                            className="hover-scale"
+                        >
+                            <Phone size={20} fill="white" />
+                            Send Order to WhatsApp
+                        </a>
+
+                        <button 
+                            onClick={onClose}
+                            style={{ background: 'none', border: 'none', color: '#999', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}
+                        >
+                            Return to Homepage
+                        </button>
                     </div>
                 ) : showWarning ? (
                     <div style={{ textAlign: 'center', padding: '20px 0' }}>

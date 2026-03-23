@@ -130,16 +130,28 @@ app.post('/api/auth/send-otp', async (req, res) => {
             };
             await transporter.sendMail(mailOptions);
         } else if (type === 'phone' && twilioClient && process.env.TWILIO_PHONE_NUMBER) {
-            // Format phone number for Twilio (Ensure E.164 format)
-            let formattedPhone = identifier.replace(/\s/g, ''); 
-            if (!formattedPhone.startsWith('+')) {
-                if (formattedPhone.startsWith('0')) {
-                    formattedPhone = '+94' + formattedPhone.substring(1);
-                } else if (formattedPhone.startsWith('94') && formattedPhone.length >= 11) {
-                    formattedPhone = '+' + formattedPhone;
+            // Format phone number for Twilio (Ensure E.164 format for Sri Lanka)
+            let clean = identifier.replace(/\D/g, ''); 
+            if (clean.startsWith('0')) clean = clean.substring(1);
+            
+            let formattedPhone;
+            if (clean.startsWith('947') && clean.length >= 11) {
+                // Already has country code + mobile prefix (e.g., 94771234567)
+                formattedPhone = '+' + clean;
+            } else if (clean.startsWith('7') && clean.length === 9) {
+                // Just the 9 mobile digits (e.g., 771234567)
+                formattedPhone = '+94' + clean;
+            } else if (clean.startsWith('9') && clean.length === 9) {
+                // Possible misunderstanding where user types 94... but it's cut by frontend to 9 digits
+                // If it starts with 94, assume it was meant to be the country code.
+                if (clean.startsWith('94')) {
+                    formattedPhone = '+94' + clean.substring(2);
                 } else {
-                    formattedPhone = '+94' + formattedPhone;
+                    formattedPhone = '+94' + clean;
                 }
+            } else {
+                // Fallback to prepending +94
+                formattedPhone = clean.startsWith('+') ? clean : '+94' + clean;
             }
 
             try {
