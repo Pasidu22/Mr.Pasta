@@ -3,7 +3,7 @@ import {
     LayoutDashboard, Package, ShoppingBag, Settings as SettingsIcon, 
     Plus, Edit2, Trash2, CheckCircle, Clock, Truck, XCircle, CreditCard,
     Save, RefreshCcw, Phone, Mail, MapPin, MessageSquare, ArrowLeft,
-    Upload, Image as ImageIcon
+    Upload, Image as ImageIcon, Minimize2, Maximize2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../utils/api';
@@ -302,7 +302,8 @@ const OrdersTab = ({ orders, onUpdate }) => {
 const ProductsTab = ({ products, onUpdate }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [editingProduct, setEditingProduct] = useState(null);
-    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', rating: '5.0', category: 'Regular Pasta', desc: '', image: '/assets/smaple_product.png' });
+    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', rating: '5.0', category: 'Regular Pasta', desc: '', image: '/assets/sample_product.png' });
+    const [isMinimized, setIsMinimized] = useState(false);
     const fileInputRef = React.useRef(null);
 
     const handleImageUpload = (e) => {
@@ -399,17 +400,28 @@ const ProductsTab = ({ products, onUpdate }) => {
                     ))}
                 </div>
 
-            {/* Form */}
             <div style={{ 
                 background: 'white', 
-                padding: '16px 20px', // Tightened padding
+                padding: isMinimized ? '12px 20px' : '16px 20px', 
                 borderRadius: '24px', 
                 position: 'sticky', 
                 top: '0px', 
-                boxShadow: '0 10px 30px rgba(0,0,0,0.05)'
+                boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+                transition: 'all 0.3s ease'
             }}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: '18px' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
-                <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMinimized ? '0' : '16px' }}>
+                    <h3 style={{ margin: 0, fontSize: '18px' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
+                    <button 
+                        onClick={() => setIsMinimized(!isMinimized)}
+                        style={{ background: '#f5f5f5', border: 'none', borderRadius: '10px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#666' }}
+                        title={isMinimized ? "Expand" : "Minimize"}
+                    >
+                        {isMinimized ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
+                    </button>
+                </div>
+
+                {!isMinimized && (
+                    <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <input required placeholder="Product Name" value={editingProduct?.name || newProduct.name} onChange={e => editingProduct ? setEditingProduct({...editingProduct, name: e.target.value}) : setNewProduct({...newProduct, name: e.target.value})} style={{ flex: 1.5, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
                         <select value={editingProduct?.category || newProduct.category} onChange={e => editingProduct ? setEditingProduct({...editingProduct, category: e.target.value}) : setNewProduct({...newProduct, category: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }}>
@@ -480,6 +492,7 @@ const ProductsTab = ({ products, onUpdate }) => {
                         <button type="submit" style={{ flex: 2, padding: '12px', background: 'var(--color-deep-black)', color: 'white', borderRadius: '12px', border: 'none', fontWeight: '800', cursor: 'pointer', fontSize: '14px' }}>{editingProduct ? 'Update Product' : 'Add Product'}</button>
                     </div>
                 </form>
+                )}
             </div>
         </div>
     </div>
