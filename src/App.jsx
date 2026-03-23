@@ -15,7 +15,9 @@ import AuthModal from './components/AuthModal';
 import Settings from './pages/Settings';
 import Admin from './pages/Admin';
 import About from './pages/About';
+import TestimonialsPage from './pages/TestimonialsPage';
 import Footer from './components/Footer';
+import LiveCounter from './components/LiveCounter';
 import ScrollToTop from './components/ScrollToTop';
 
 function AppContent() {
@@ -114,7 +116,9 @@ function AppContent() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/about" element={<About />} />
+          <Route path="/customer-feedbacks" element={<TestimonialsPage />} />
         </Routes>
+        {!isAdminPage && <LiveCounter />}
         {!isAdminPage && <Footer />}
       </main>
     </div>

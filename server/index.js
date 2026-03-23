@@ -8,6 +8,7 @@ const Order = require('./models/Order');
 const OTP = require('./models/OTP');
 const Product = require('./models/Product');
 const Settings = require('./models/Settings');
+const Feedback = require('./models/Feedback');
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 
@@ -468,6 +469,77 @@ app.post('/api/admin/seed', async (req, res) => {
         }
         
         res.json({ message: 'Database seeded successfully', productsCount: initialProducts.length });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- 8. Feedback (Testimonials) Management ---
+
+// Get all feedbacks (Admin)
+app.get('/api/feedback', async (req, res) => {
+    try {
+        const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+        res.json(feedbacks);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get approved feedbacks with optional random limit
+app.get('/api/feedback/approved', async (req, res) => {
+    const { limit, random } = req.query;
+    try {
+        let query = Feedback.find({ approved: true });
+        
+        if (random === 'true') {
+            const count = await Feedback.countDocuments({ approved: true });
+            const skip = Math.max(0, Math.floor(Math.random() * (count - (parseInt(limit) || 3))));
+            query = query.skip(skip);
+        }
+
+        if (limit) query = query.limit(parseInt(limit));
+        
+        const feedbacks = await query.sort({ createdAt: -1 });
+        res.json(feedbacks);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Submit new feedback (Starts as unapproved)
+app.post('/api/feedback', async (req, res) => {
+    try {
+        const feedback = new Feedback({
+            ...req.body,
+            approved: false // Always false by default for safety
+        });
+        await feedback.save();
+        res.status(201).json(feedback);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Toggle approval status
+app.patch('/api/feedback/:id/approve', async (req, res) => {
+    try {
+        const feedback = await Feedback.findById(req.params.id);
+        if (!feedback) return res.status(404).json({ message: 'Feedback not found' });
+        
+        feedback.approved = !feedback.approved;
+        await feedback.save();
+        res.json(feedback);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete feedback
+app.delete('/api/feedback/:id', async (req, res) => {
+    try {
+        await Feedback.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Feedback deleted' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

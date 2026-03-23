@@ -181,5 +181,45 @@ export const api = {
             body: JSON.stringify({ identifier, code, profileData })
         });
         return response.json();
+    },
+
+    // Feedbacks (Testimonials)
+    getAllFeedback: async () => {
+        const response = await fetch(`${API_BASE}/feedback`);
+        return response.json();
+    },
+
+    getApprovedFeedback: async (limit = null, random = false) => {
+        let url = `${API_BASE}/feedback/approved`;
+        const params = [];
+        if (limit) params.push(`limit=${limit}`);
+        if (random) params.push(`random=true`);
+        if (params.length) url += `?${params.join('&')}`;
+        
+        const response = await fetch(url);
+        return response.json();
+    },
+
+    submitFeedback: async (feedbackData) => {
+        const response = await fetch(`${API_BASE}/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(feedbackData)
+        });
+        return response.json();
+    },
+
+    approveFeedback: async (id) => {
+        const response = await fetch(`${API_BASE}/feedback/${id}/approve`, {
+            method: 'PATCH'
+        });
+        return response.json();
+    },
+
+    deleteFeedback: async (id) => {
+        const response = await fetch(`${API_BASE}/feedback/${id}`, {
+            method: 'DELETE'
+        });
+        return response.json();
     }
 };

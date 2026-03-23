@@ -3,7 +3,7 @@ import {
     LayoutDashboard, Package, ShoppingBag, Settings as SettingsIcon, 
     Plus, Edit2, Trash2, CheckCircle, Clock, Truck, XCircle, CreditCard,
     Save, RefreshCcw, Phone, Mail, MapPin, MessageSquare, ArrowLeft,
-    Upload, Image as ImageIcon, Minimize2, Maximize2
+    Upload, Image as ImageIcon, Minimize2, Maximize2, Star
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../utils/api';
@@ -12,6 +12,7 @@ const Admin = () => {
     const [activeTab, setActiveTab] = useState('orders');
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
+    const [feedbacks, setFeedbacks] = useState([]);
     const [settings, setSettings] = useState({});
     const [loading, setLoading] = useState(true);
     const [isPasswordVerified, setIsPasswordVerified] = useState(false);
@@ -30,14 +31,16 @@ const Admin = () => {
         setLoading(true);
         setIsRefreshing(true);
         try {
-            const [ordersData, productsData, settingsData] = await Promise.all([
+            const [ordersData, productsData, settingsData, feedbacksData] = await Promise.all([
                 api.getAllOrders(),
                 api.getProducts(),
-                api.getSettings()
+                api.getSettings(),
+                api.getAllFeedback()
             ]);
             setOrders(ordersData);
             setProducts(productsData);
             setSettings(settingsData);
+            setFeedbacks(feedbacksData);
             setLastUpdated(new Date());
         } catch (err) {
             console.error("Dashboard fetch error:", err);
@@ -120,6 +123,7 @@ const Admin = () => {
                 {[
                     { id: 'orders', label: 'Orders', icon: ShoppingBag },
                     { id: 'products', label: 'Products', icon: Package },
+                    { id: 'feedbacks', label: 'Feedbacks', icon: MessageSquare },
                     { id: 'settings', label: 'Site Settings', icon: SettingsIcon }
                 ].map(tab => (
                     <button 
@@ -152,6 +156,7 @@ const Admin = () => {
                 <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
                     {activeTab === 'orders' && <OrdersTab orders={orders} onUpdate={fetchData} />}
                     {activeTab === 'products' && <ProductsTab products={products} onUpdate={fetchData} />}
+                    {activeTab === 'feedbacks' && <FeedbacksTab feedbacks={feedbacks} onUpdate={fetchData} />}
                     {activeTab === 'settings' && <SettingsTab settings={settings} onUpdate={fetchData} />}
                 </div>
             </div>
@@ -603,5 +608,105 @@ const SettingsTab = ({ settings, onUpdate }) => {
         </div>
     );
 };
+
+const FeedbacksTab = ({ feedbacks, onUpdate }) => {
+    const handleApprove = async (id) => {
+        try {
+            await api.approveFeedback(id);
+            onUpdate();
+        } catch (err) { alert('Approval failed'); }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Delete this feedback?')) {
+            try {
+                await api.deleteFeedback(id);
+                onUpdate();
+            } catch (err) { alert('Delete failed'); }
+        }
+    };
+
+    const pending = feedbacks.filter(f => !f.approved);
+    const approved = feedbacks.filter(f => f.approved);
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+            {/* Pending Section */}
+            <div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Clock size={20} color="var(--color-terracotta)" /> 
+                    Pending Approval ({pending.length})
+                </h3>
+                {pending.length === 0 ? (
+                    <div style={{ padding: '40px', textAlign: 'center', background: 'white', borderRadius: '24px', color: '#888' }}>
+                        No pending feedbacks.
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {pending.map(f => (
+                            <FeedbackCard key={f._id} feedback={f} onApprove={() => handleApprove(f._id)} onDelete={() => handleDelete(f._id)} />
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Approved Section */}
+            <div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <CheckCircle size={20} color="#22c55e" /> 
+                    Approved Feedbacks ({approved.length})
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {approved.map(f => (
+                        <FeedbackCard key={f._id} feedback={f} onApprove={() => handleApprove(f._id)} onDelete={() => handleDelete(f._id)} />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const FeedbackCard = ({ feedback, onApprove, onDelete }) => (
+    <div style={{ background: 'white', padding: '24px', borderRadius: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '20px' }}>
+        <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--color-gray-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', color: 'var(--color-terracotta)' }}>
+                    {feedback.name.charAt(0)}
+                </div>
+                <div>
+                    <h4 style={{ margin: 0, fontSize: '16px' }}>{feedback.name}</h4>
+                    <span style={{ fontSize: '12px', color: '#888' }}>{feedback.location} • {new Date(feedback.createdAt).toLocaleDateString()}</span>
+                </div>
+            </div>
+            <div style={{ display: 'flex', gap: '2px', marginBottom: '12px' }}>
+                {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={14} fill={i < feedback.rating ? '#FFB800' : '#eee'} color={i < feedback.rating ? '#FFB800' : '#eee'} />
+                ))}
+            </div>
+            <p style={{ margin: 0, fontSize: '15px', color: '#444', lineHeight: '1.6', fontStyle: 'italic' }}>"{feedback.text}"</p>
+        </div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+                onClick={onApprove}
+                style={{ 
+                    padding: '10px 16px', borderRadius: '12px', border: 'none', 
+                    background: feedback.approved ? '#f5f5f5' : 'var(--color-terracotta)', 
+                    color: feedback.approved ? '#666' : 'white', 
+                    fontWeight: '700', fontSize: '13px', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '6px'
+                }}
+            >
+                {feedback.approved ? <XCircle size={16} /> : <CheckCircle size={16} />}
+                {feedback.approved ? 'Unapprove' : 'Approve'}
+            </button>
+            <button 
+                onClick={onDelete}
+                style={{ padding: '10px', borderRadius: '12px', border: '1px solid #fee2e2', background: 'none', color: '#ef4444', cursor: 'pointer' }}
+            >
+                <Trash2 size={18} />
+            </button>
+        </div>
+    </div>
+);
 
 export default Admin;

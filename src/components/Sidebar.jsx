@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingBasket, Clock, User, Heart, Settings, LogOut, X } from 'lucide-react';
+import { Home, ShoppingBasket, Clock, User, Heart, Settings, LogOut, X, MessageSquare } from 'lucide-react';
 import logo from '../assets/logo.jpg';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -38,6 +38,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { name: 'Products', path: '/products', icon: <ShoppingBasket size={20} /> },
         { name: 'Orders', path: '/orders', icon: <Clock size={20} /> },
         { name: 'Favorites', path: '/favorites', icon: <Heart size={20} /> },
+        { name: 'Customer feedbacks', path: '/customer-feedbacks', icon: <MessageSquare size={20} /> },
         { name: 'About Us', path: '/about', icon: <User size={20} /> },
     ];
 
