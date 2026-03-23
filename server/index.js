@@ -142,12 +142,17 @@ app.post('/api/auth/send-otp', async (req, res) => {
                 }
             }
 
-            await twilioClient.messages.create({
-                body: `Your Mr. Pasta verification code is: ${otpCode}. Tasty Healthy Happy!`,
-                from: process.env.TWILIO_PHONE_NUMBER,
-                to: formattedPhone
-            });
-            console.log(`✅ [Twilio SMS] Sent OTP to ${formattedPhone}`);
+            try {
+                await twilioClient.messages.create({
+                    body: `Your Mr. Pasta verification code is: ${otpCode}. Tasty Healthy Happy!`,
+                    from: process.env.TWILIO_PHONE_NUMBER,
+                    to: formattedPhone
+                });
+                console.log(`✅ [Twilio SMS] Sent OTP to ${formattedPhone}`);
+            } catch (twilioErr) {
+                console.warn(`⚠️ Twilio failed (likely Trial account restriction): ${twilioErr.message}`);
+                console.log(`✅ [FALLBACK] OTP for ${formattedPhone}: ${otpCode}`);
+            }
         } else {
             console.log(`✅ [MOCK SMS] OTP: ${otpCode}`);
         }
