@@ -42,12 +42,31 @@ const AuthModal = ({ isOpen, onClose }) => {
         if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
     };
 
-    const handleOtpChange = (element, index) => {
-        if (isNaN(element.value)) return false;
+    const handleOtpChange = (value, index) => {
+        if (value !== '' && !/^[0-9]$/.test(value)) return;
+        
         const newOtp = [...otp];
-        newOtp[index] = element.value;
+        newOtp[index] = value;
         setOtp(newOtp);
-        if (element.nextSibling && element.value) element.nextSibling.focus();
+        
+        // Move to next input if value is entered
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`otp-${index + 1}`);
+            if (nextInput) nextInput.focus();
+        }
+    };
+
+    const handleOtpKeyDown = (e, index) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            const prevInput = document.getElementById(`otp-${index - 1}`);
+            if (prevInput) prevInput.focus();
+        }
+    };
+
+    const clearOtp = () => {
+        setOtp(['', '', '', '', '', '']);
+        const firstInput = document.getElementById('otp-0');
+        if (firstInput) firstInput.focus();
     };
 
     const validate = () => {
@@ -381,14 +400,18 @@ const AuthModal = ({ isOpen, onClose }) => {
                             </div>
                         )}
 
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}>
                             {otp.map((data, index) => (
                                 <input
                                     key={index}
-                                    type="text"
+                                    id={`otp-${index}`}
+                                    type="tel"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     maxLength="1"
                                     value={data}
-                                    onChange={e => handleOtpChange(e.target, index)}
+                                    onChange={e => handleOtpChange(e.target.value, index)}
+                                    onKeyDown={e => handleOtpKeyDown(e, index)}
                                     onFocus={e => e.target.select()}
                                     style={{
                                         width: '48px',
@@ -405,6 +428,13 @@ const AuthModal = ({ isOpen, onClose }) => {
                                 />
                             ))}
                         </div>
+
+                        <button 
+                            onClick={clearOtp}
+                            style={{ background: 'none', border: 'none', color: '#999', fontSize: '13px', marginBottom: '32px', cursor: 'pointer', textDecoration: 'underline' }}
+                        >
+                            Clear Code
+                        </button>
 
                         <button 
                             disabled={isLoading}
@@ -665,10 +695,15 @@ const AuthModal = ({ isOpen, onClose }) => {
                             {otp.map((data, index) => (
                                 <input
                                     key={index}
-                                    type="text"
+                                    id={`otp-alt-${index}`}
+                                    type="tel"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     maxLength="1"
                                     value={data}
-                                    onChange={e => handleOtpChange(e.target, index)}
+                                    onChange={e => handleOtpChange(e.target.value, index)}
+                                    onKeyDown={e => handleOtpKeyDown(e, index)}
+                                    onFocus={e => e.target.select()}
                                     style={{
                                         width: '40px',
                                         height: '50px',
@@ -676,11 +711,20 @@ const AuthModal = ({ isOpen, onClose }) => {
                                         border: '2px solid #ddd',
                                         textAlign: 'center',
                                         fontSize: '18px',
-                                        fontWeight: '700'
+                                        fontWeight: '700',
+                                        outline: 'none',
+                                        background: '#fff'
                                     }}
                                 />
                             ))}
                         </div>
+
+                        <button 
+                            onClick={clearOtp}
+                            style={{ background: 'none', border: 'none', color: '#999', fontSize: '13px', marginBottom: '20px', cursor: 'pointer', textDecoration: 'underline' }}
+                        >
+                            Clear Code
+                        </button>
 
                         {errors.otp && <p style={{ color: '#ff3b30', fontSize: '13px', marginBottom: '16px' }}>{errors.otp}</p>}
 
