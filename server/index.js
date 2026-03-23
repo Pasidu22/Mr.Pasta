@@ -130,11 +130,16 @@ app.post('/api/auth/send-otp', async (req, res) => {
             };
             await transporter.sendMail(mailOptions);
         } else if (type === 'phone' && twilioClient && process.env.TWILIO_PHONE_NUMBER) {
-            // Format phone number for Twilio (Add +94 if missing)
-            let formattedPhone = identifier;
+            // Format phone number for Twilio (Ensure E.164 format)
+            let formattedPhone = identifier.replace(/\s/g, ''); 
             if (!formattedPhone.startsWith('+')) {
-                if (formattedPhone.startsWith('0')) formattedPhone = formattedPhone.substring(1);
-                formattedPhone = `+94${formattedPhone}`;
+                if (formattedPhone.startsWith('0')) {
+                    formattedPhone = '+94' + formattedPhone.substring(1);
+                } else if (formattedPhone.startsWith('94') && formattedPhone.length >= 11) {
+                    formattedPhone = '+' + formattedPhone;
+                } else {
+                    formattedPhone = '+94' + formattedPhone;
+                }
             }
 
             await twilioClient.messages.create({
