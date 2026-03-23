@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { api } from '../utils/api';
+import SEO from '../components/SEO';
 
 const Products = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -77,6 +78,11 @@ const Products = () => {
 
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', padding: '20px 0' }}>
+            <SEO 
+                title={activeCategory === 'All' ? "Our Products" : `${activeCategory} Pasta`}
+                description={`Browse our premium range of ${activeCategory === 'All' ? 'traditional and healthy' : activeCategory} pasta. High quality, factory-direct prices in Sri Lanka.`}
+                keywords={`Mr. Pasta, ${activeCategory}, Rice Flour Pasta, Gluten Free, Sri Lanka, Healthy Dining`}
+            />
             <div style={{ marginBottom: '48px', textAlign: 'center' }}>
                 <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '16px', letterSpacing: '-1.5px' }}>
                     Our Full Menu

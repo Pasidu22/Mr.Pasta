@@ -9,10 +9,21 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import VisionMission from '../components/VisionMission';
 import Testimonials from '../components/Testimonials';
+import SEO from '../components/SEO';
 
 const Home = () => {
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', width: '100%' }}>
+            <SEO 
+                title="Home" 
+                description="The best premium pasta in Sri Lanka. From factory-direct wholesale to healthy gluten-free options, Mr. Pasta brings gourmet dining to your home while supporting cancer care."
+                keywords="Mr. Pasta, Sri Lanka, Premium Pasta, Gourmet, Healthy, Gluten-Free, Apeksha Hospital"
+            />
+            {/* Hidden H1 for SEO */}
+            <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
+                Mr. Pasta - Premium Sri Lankan Pasta & Gourmet Dining
+            </h1>
+
             <div style={{ marginBottom: '32px' }}>
                 <CategoryCarousel />
             </div>

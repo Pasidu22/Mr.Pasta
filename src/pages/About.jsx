@@ -1,10 +1,16 @@
 import React from 'react';
 import WhoWeAre from '../components/WhoWeAre';
 import VisionMission from '../components/VisionMission';
+import SEO from '../components/SEO';
 
 const About = () => {
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', width: '100%' }}>
+            <SEO 
+                title="About Our Journey" 
+                description="Learn about Mr. Pasta's mission to provide premium, healthy, and accessible pasta while supporting social causes like cancer care at Apeksha Hospital."
+                keywords="Mr. Pasta Story, History, Vision, Mission, Social Impact, Sri Lanka, Healthy Dining"
+            />
             {/* Hero Section */}
             <section style={{ 
                 padding: '120px 20px 80px',
