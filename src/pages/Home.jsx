@@ -8,6 +8,7 @@ import SocialImpact from '../components/SocialImpact';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import VisionMission from '../components/VisionMission';
+import Testimonials from '../components/Testimonials';
 
 const Home = () => {
     return (
@@ -29,6 +30,8 @@ const Home = () => {
             <div id="social-impact">
                 <SocialImpact />
             </div>
+
+            <Testimonials />
 
             {/* About Redirect Section */}
             <div style={{ padding: '80px 20px', background: 'var(--color-gray-soft)', textAlign: 'center' }}>
