@@ -77,55 +77,76 @@ const Products = () => {
     }
 
     return (
-        <div style={{ animation: 'fadeIn 0.5s ease-out', padding: '20px 0' }}>
+        <div style={{ 
+            animation: 'fadeIn 0.5s ease-out', 
+            paddingTop: 'var(--header-height, 80px)', 
+            paddingBottom: '40px' 
+        }}>
             <SEO 
                 title={activeCategory === 'All' ? "Our Products" : `${activeCategory} Pasta`}
                 description={`Browse our premium range of ${activeCategory === 'All' ? 'traditional and healthy' : activeCategory} pasta. High quality, factory-direct prices in Sri Lanka.`}
                 keywords={`Mr. Pasta, ${activeCategory}, Rice Flour Pasta, Gluten Free, Sri Lanka, Healthy Dining`}
             />
-            <div style={{ marginBottom: '48px', textAlign: 'center' }}>
-                <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '16px', letterSpacing: '-1.5px' }}>
-                    Our Full Menu
-                </h1>
-                <p style={{ color: '#666', fontSize: '18px', maxWidth: '600px', margin: '0 auto', marginBottom: '32px' }}>
-                    Explore our diverse range of premium pasta, from traditional wheat to healthy gluten-free options.
-                </p>
 
-                {/* Category Filter Bar */}
-                <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    gap: '12px', 
-                    flexWrap: 'wrap',
-                    padding: '8px',
-                    background: 'var(--color-gray-soft)',
-                    borderRadius: '40px',
-                    width: 'fit-content',
-                    margin: '0 auto',
-                    marginBottom: '40px'
-                }}>
-                    {allCategories.map(cat => (
-                        <button
-                            key={cat}
-                            onClick={() => handleCategoryChange(cat)}
-                            style={{
-                                padding: '10px 24px',
-                                borderRadius: '30px',
-                                border: 'none',
-                                background: activeCategory === cat ? 'var(--color-terracotta)' : 'transparent',
-                                color: activeCategory === cat ? 'white' : 'var(--color-deep-black)',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                fontSize: '15px'
-                            }}
-                            className={activeCategory === cat ? '' : 'hover-scale'}
-                        >
-                            {cat}
-                        </button>
-                    ))}
+            <div className="main-container" style={{ paddingTop: '40px' }}>
+                <div style={{ marginBottom: '48px', textAlign: 'center' }}>
+                    <h1 style={{ 
+                        fontSize: 'clamp(32px, 8vw, 42px)', 
+                        fontWeight: '800', 
+                        marginBottom: '16px', 
+                        letterSpacing: '-1.5px',
+                        fontFamily: 'var(--font-accent)'
+                    }}>
+                        Our Full Menu
+                    </h1>
+                    <p style={{ color: '#666', fontSize: '18px', maxWidth: '600px', margin: '0 auto', marginBottom: '32px' }}>
+                        Explore our diverse range of premium pasta, from traditional wheat to healthy gluten-free options.
+                    </p>
+
+                    {/* Category Filter Bar - Horizontal Scroll on Mobile */}
+                    <div className="hide-scrollbar" style={{ 
+                        display: 'flex', 
+                        justifyContent: window.innerWidth < 768 ? 'flex-start' : 'center', 
+                        gap: '12px', 
+                        overflowX: 'auto',
+                        padding: '12px 4px',
+                        width: '100%',
+                        marginBottom: '40px',
+                        WebkitOverflowScrolling: 'touch'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            gap: '12px',
+                            background: 'var(--color-gray-soft)',
+                            padding: '6px',
+                            borderRadius: '40px',
+                            margin: window.innerWidth < 768 ? '0' : '0 auto'
+                        }}>
+                            {allCategories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => handleCategoryChange(cat)}
+                                    style={{
+                                        padding: '10px 24px',
+                                        borderRadius: '30px',
+                                        border: 'none',
+                                        background: activeCategory === cat ? 'var(--color-terracotta)' : 'transparent',
+                                        color: activeCategory === cat ? 'white' : 'var(--color-deep-black)',
+                                        fontWeight: '700',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                        fontSize: '14px',
+                                        whiteSpace: 'nowrap',
+                                        boxShadow: activeCategory === cat ? '0 4px 12px rgba(255, 92, 0, 0.2)' : 'none'
+                                    }}
+                                    className={activeCategory === cat ? '' : 'hover-scale'}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-            </div>
 
             {filteredCategories.map(category => (
                 <section key={category} style={{ marginBottom: '64px', animation: 'fadeInUp 0.6s ease-out forwards' }}>
@@ -170,7 +191,8 @@ const Products = () => {
                             ))}
                     </div>
                 </section>
-            ))}
+                ))}
+            </div>
         </div>
     );
 };
