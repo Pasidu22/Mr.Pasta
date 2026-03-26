@@ -66,16 +66,14 @@ const LiveCounter = () => {
             borderBottom: '1px solid var(--color-gray-border)'
         }}>
             <div style={{ 
-                maxWidth: '1200px', 
+                maxWidth: '800px', 
                 margin: '0 auto',
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gridTemplateColumns: 'repeat(2, 1fr)',
                 gap: '40px'
             }}>
-                <CounterItem icon={Users} target="1250" label="Happy Customers" />
-                <CounterItem icon={ShoppingBag} target="16" label="Premium Varieties" suffix="" />
-                <CounterItem icon={Award} target="100" label="Quality Guaranteed" suffix="%" />
-                <CounterItem icon={Truck} target="48" label="Hours Avg. Delivery" suffix="h" />
+                <CounterItem icon={Users} target="1000" label="Happy Customers" />
+                <CounterItem icon={ShoppingBag} target="16" label="Premium Products" suffix="" />
             </div>
         </section>
     );

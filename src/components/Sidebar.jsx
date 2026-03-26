@@ -47,7 +47,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <img src={logo} alt="Mr. Pasta Logo" style={{ height: '32px', width: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <h2 style={{ color: 'var(--color-terracotta)', fontSize: '1.2rem', fontFamily: 'var(--font-accent)', margin: 0 }}>
+                    <h2 style={{ color: 'var(--color-terracotta)', fontSize: '1.2rem', fontFamily: 'var(--font-brand)', margin: 0 }}>
                         MR. PASTA
                     </h2>
                 </div>
@@ -116,7 +116,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 }}
                             >
                                 <User size={20} />
-                                <span>Profile</span>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span style={{ fontSize: '14px', opacity: 0.7, marginBottom: '-2px' }}>Welcome,</span>
+                                    <span style={{ fontWeight: '700' }}>{user.name || 'User'}</span>
+                                </div>
                             </Link>
                         ) : (
                             <button 

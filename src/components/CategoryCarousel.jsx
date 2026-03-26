@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Sprout, Soup, ShieldCheck } from 'lucide-react';
 
 const CategoryCarousel = () => {
     const navigate = useNavigate();
     const categories = [
-        { name: 'Regular Pasta', icon: '🌾' },
-        { name: 'Rice Flour Pasta', icon: '🍚' },
-        { name: 'Gluten-Free', icon: '🛡️' },
+        { name: 'Regular Pasta', icon: <Sprout size={28} />, color: '#4CAF50' },
+        { name: 'Rice Flour Pasta', icon: <Soup size={28} />, color: '#FF9800' },
+        { name: 'Gluten-Free', icon: <ShieldCheck size={28} />, color: '#2196F3' },
     ];
 
     const handleCategoryClick = (categoryName) => {
@@ -14,41 +15,37 @@ const CategoryCarousel = () => {
     };
 
     return (
-        <div style={{ 
+        <div className="category-container-v4 hide-scrollbar" style={{ 
             display: 'flex', 
             gap: '32px', 
             overflowX: 'auto', 
-            padding: '20px 0', 
+            padding: '40px 20px', 
+            justifyContent: 'center',
             scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-        }} className="hide-scrollbar">
-            {categories.map((cat) => (
+            msOverflowStyle: 'none',
+            flexWrap: 'wrap'
+        }}>
+            {categories.map((cat, index) => (
                 <div 
                     key={cat.name} 
                     onClick={() => handleCategoryClick(cat.name)}
+                    className="category-card-v4 hover-scale animate-staggered"
                     style={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        alignItems: 'center', 
-                        gap: '8px', 
-                        minWidth: '80px',
-                        cursor: 'pointer'
+                        animationDelay: `${index * 0.15}s`
                     }}
                 >
-                    <div style={{ 
-                        fontSize: '32px', 
-                        background: 'var(--color-gray-soft)', 
-                        width: '64px', 
-                        height: '64px', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
-                        borderRadius: '50%',
-                        transition: 'var(--transition)'
-                    }} className="hover-scale">
+                    <div 
+                        className="category-icon-wrapper-v4"
+                        style={{ 
+                            background: `${cat.color}15`, 
+                            color: cat.color
+                        }}
+                    >
                         {cat.icon}
                     </div>
-                    <span style={{ fontSize: '13px', fontWeight: '600', textAlign: 'center' }}>{cat.name}</span>
+                    <span className="category-name-v4">
+                        {cat.name}
+                    </span>
                 </div>
             ))}
         </div>

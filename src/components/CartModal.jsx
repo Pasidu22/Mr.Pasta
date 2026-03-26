@@ -21,6 +21,9 @@ const CartModal = ({ isOpen, onClose, onCheckout }) => {
             ]);
             setSettings(fetchedSettings);
 
+            const validCart = { ...cart };
+            let hasChanges = false;
+
             Object.keys(cart).forEach(id => {
                 const product = products.find(p => p.id === parseInt(id));
                 if (product) {
@@ -28,8 +31,16 @@ const CartModal = ({ isOpen, onClose, onCheckout }) => {
                     const itemTotal = parseInt(product.price) * quantity;
                     items.push({ ...product, quantity, itemTotal });
                     subtotal += itemTotal;
+                } else {
+                    delete validCart[id];
+                    hasChanges = true;
                 }
             });
+
+            if (hasChanges) {
+                localStorage.setItem('mr_pasta_cart', JSON.stringify(validCart));
+                window.dispatchEvent(new Event('storage'));
+            }
 
             setCartItems(items);
             const delivery = (subtotal > 0 && fetchedSettings.deliveryChargesEnabled !== false) ? (fetchedSettings.deliveryFee || 250) : 0;

@@ -112,7 +112,9 @@ const PromoCarousel = () => {
                             alignItems: 'center',
                             scrollSnapAlign: 'start',
                             position: 'relative',
-                            overflow: 'hidden'
+                            overflow: 'hidden',
+                            boxShadow: 'var(--shadow-md)',
+                            transition: 'var(--transition)'
                         }}
                     >
                         <div style={{ maxWidth: '65%', zIndex: 2 }}>

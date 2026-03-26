@@ -18,7 +18,7 @@ const Footer = () => {
         <footer style={{
             background: 'var(--palette-black)',
             color: 'white',
-            padding: '80px 40px 40px',
+            padding: '80px 0 40px',
             marginTop: 'auto',
             width: '100%',
             transition: 'background-color 0.3s'
@@ -26,6 +26,7 @@ const Footer = () => {
             <div style={{
                 maxWidth: '1200px',
                 margin: '0 auto',
+                padding: '0 20px',
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                 gap: '48px',
@@ -38,7 +39,7 @@ const Footer = () => {
                         fontWeight: '800', 
                         marginBottom: '20px',
                         color: 'var(--color-terracotta)',
-                        fontFamily: 'var(--font-accent)'
+                        fontFamily: 'var(--font-brand)'
                     }}>MR. PASTA</h2>
                     <p style={{ 
                         fontSize: '14px', 

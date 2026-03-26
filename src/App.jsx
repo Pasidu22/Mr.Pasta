@@ -109,14 +109,14 @@ function AppContent() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/products" element={<div className="main-container"><Products /></div>} />
+          <Route path="/profile" element={<div className="main-container"><Profile /></div>} />
+          <Route path="/favorites" element={<div className="main-container"><Favorites /></div>} />
+          <Route path="/orders" element={<div className="main-container"><Orders /></div>} />
+          <Route path="/settings" element={<div className="main-container"><Settings /></div>} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/customer-feedbacks" element={<TestimonialsPage />} />
+          <Route path="/about" element={<div className="main-container"><About /></div>} />
+          <Route path="/customer-feedbacks" element={<div className="main-container"><TestimonialsPage /></div>} />
         </Routes>
         {!isAdminPage && <LiveCounter />}
         {!isAdminPage && <Footer />}
