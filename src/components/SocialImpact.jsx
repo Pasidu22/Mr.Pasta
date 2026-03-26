@@ -4,7 +4,7 @@ import apekshaImg from '../assets/apeksha.png';
 const SocialImpact = () => {
     return (
         <section style={{ 
-            margin: '80px 0', 
+            margin: '40px 0', 
             background: 'linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%)',
             borderRadius: '40px',
             position: 'relative',
@@ -14,7 +14,7 @@ const SocialImpact = () => {
             display: 'flex',
             flexDirection: window.innerWidth < 992 ? 'column' : 'row',
             alignItems: 'stretch',
-            minHeight: '450px'
+            minHeight: '400px'
         }}>
             {/* Image Side with creative mask */}
             <div style={{
@@ -51,7 +51,7 @@ const SocialImpact = () => {
             {/* Content Side */}
             <div style={{ 
                 flex: '1.2', 
-                padding: '60px', 
+                padding: '40px', 
                 position: 'relative', 
                 zIndex: 2,
                 display: 'flex',

@@ -17,9 +17,9 @@ const CategoryCarousel = () => {
     return (
         <div className="category-container-v4 hide-scrollbar" style={{ 
             display: 'flex', 
-            gap: '32px', 
+            gap: '16px', 
             overflowX: 'auto', 
-            padding: '40px 20px', 
+            padding: '24px 10px', 
             justifyContent: 'center',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',

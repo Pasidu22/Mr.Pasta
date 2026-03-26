@@ -1,17 +1,17 @@
 import React from 'react';
 
-const PhilosophyCard = ({ emoji, title, description, delay }) => (
+const PhilosophyCard = ({ emoji, title, description, delay, accentColor, bgColor }) => (
     <div style={{
         flex: 1,
         textAlign: 'center',
-        padding: '40px 32px',
-        background: 'rgba(255, 255, 255, 0.8)',
+        padding: '32px 24px',
+        background: bgColor || 'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(10px)',
         borderRadius: '24px',
-        border: '1px solid rgba(255, 92, 0, 0.1)',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
+        border: `1px solid ${accentColor}22`,
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.04)',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        minWidth: '280px',
+        minWidth: '260px',
         maxWidth: '100%',
         animation: `fadeInUp 0.8s ease-out ${delay}s both`,
         position: 'relative',
@@ -19,14 +19,14 @@ const PhilosophyCard = ({ emoji, title, description, delay }) => (
     }}
     className="hover-card-premium"
     onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-12px)';
-        e.currentTarget.style.boxShadow = '0 20px 40px rgba(255, 92, 0, 0.1)';
-        e.currentTarget.style.borderColor = 'var(--color-terracotta)';
+        e.currentTarget.style.transform = 'translateY(-10px)';
+        e.currentTarget.style.boxShadow = `0 20px 40px ${accentColor}15`;
+        e.currentTarget.style.borderColor = accentColor;
     }}
     onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.03)';
-        e.currentTarget.style.borderColor = 'rgba(255, 92, 0, 0.1)';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.04)';
+        e.currentTarget.style.borderColor = `${accentColor}22`;
     }}>
         {/* Accent Bar */}
         <div style={{
@@ -34,30 +34,30 @@ const PhilosophyCard = ({ emoji, title, description, delay }) => (
             top: 0,
             left: 0,
             width: '100%',
-            height: '4px',
-            background: 'var(--color-terracotta)',
-            opacity: 0.8
+            height: '6px',
+            background: accentColor,
+            opacity: 0.9
         }}></div>
 
         <div style={{
-            width: '80px',
-            height: '80px',
-            background: 'rgba(255, 92, 0, 0.05)',
-            borderRadius: '50%',
+            width: '72px',
+            height: '72px',
+            background: `${accentColor}11`,
+            borderRadius: '20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '42px',
-            marginBottom: '28px',
-            margin: '0 auto 28px',
+            fontSize: '36px',
+            marginBottom: '24px',
+            margin: '0 auto 24px',
             transition: 'transform 0.4s ease'
         }}>
             {emoji}
         </div>
         <h3 style={{ 
-            fontSize: '24px', 
+            fontSize: '22px', 
             fontWeight: '800', 
-            marginBottom: '16px',
+            marginBottom: '12px',
             fontFamily: 'var(--font-accent)',
             letterSpacing: '-0.5px',
             color: 'var(--color-deep-black)'
@@ -65,10 +65,10 @@ const PhilosophyCard = ({ emoji, title, description, delay }) => (
             {title}
         </h3>
         <p style={{ 
-            fontSize: '16px', 
+            fontSize: '15px', 
             color: 'rgba(26, 26, 26, 0.7)', 
-            lineHeight: '1.7',
-            maxWidth: '260px',
+            lineHeight: '1.6',
+            maxWidth: '240px',
             margin: '0 auto'
         }}>
             {description}
@@ -79,13 +79,13 @@ const PhilosophyCard = ({ emoji, title, description, delay }) => (
 const OurPhilosophy = () => {
     return (
         <section style={{ 
-            marginBottom: '80px',
-            padding: '100px 60px',
+            marginBottom: '60px',
+            padding: '60px 24px',
             background: 'linear-gradient(135deg, #fff 0%, #FAF9F6 100%)',
-            borderRadius: '40px',
+            borderRadius: '32px',
             border: '1px solid rgba(255, 92, 0, 0.05)',
             boxShadow: 'var(--shadow-premium)',
-            margin: '0 0 80px 0',
+            margin: '0 0 60px 0',
             position: 'relative',
             overflow: 'hidden'
         }}>
@@ -95,36 +95,28 @@ const OurPhilosophy = () => {
 
             <div style={{ 
                 textAlign: 'center', 
-                marginBottom: '60px',
+                marginBottom: '40px',
                 position: 'relative',
                 zIndex: 1
             }}>
-                <span style={{ 
-                    color: 'var(--color-terracotta)', 
-                    fontSize: '14px', 
-                    fontWeight: '800', 
-                    textTransform: 'uppercase', 
-                    letterSpacing: '6px',
-                    marginBottom: '16px',
-                    display: 'block'
-                }}>OUR VALUES</span>
                 <h2 style={{ 
-                    fontSize: '42px', 
+                    fontSize: '38px', 
                     fontWeight: '800', 
                     color: 'var(--color-deep-black)',
                     textAlign: 'center',
                     width: '100%',
                     fontFamily: 'var(--font-accent)',
-                    letterSpacing: '-1px'
+                    letterSpacing: '-1px',
+                    margin: 0
                 }}>
-                    The Core Philosophy
+                    Our Philosophy
                 </h2>
-                <div style={{ width: '60px', height: '4px', background: 'var(--color-terracotta)', margin: '20px auto', borderRadius: '2px' }}></div>
+                <div style={{ width: '50px', height: '4px', background: 'var(--color-terracotta)', margin: '16px auto', borderRadius: '2px' }}></div>
             </div>
 
             <div style={{ 
                 display: 'flex', 
-                gap: '32px', 
+                gap: '24px', 
                 flexWrap: 'wrap',
                 justifyContent: 'center',
                 width: '100%',
@@ -137,18 +129,24 @@ const OurPhilosophy = () => {
                     emoji="🍝" 
                     title="Tasty" 
                     description="Crafting authentic flavors that offer a truly gourmet dining experience." 
+                    accentColor="#FF5C00"
+                    bgColor="rgba(255, 92, 0, 0.02)"
                     delay={0.1}
                 />
                 <PhilosophyCard 
                     emoji="🥗" 
                     title="Healthy" 
                     description="Prioritizing clean ingredients and nutritional balance for a better lifestyle." 
+                    accentColor="#2D6A4F"
+                    bgColor="rgba(45, 106, 79, 0.02)"
                     delay={0.2}
                 />
                 <PhilosophyCard 
                     emoji="😊" 
                     title="Happy" 
                     description="Spreading joy and creating memorable connections through the love of pasta." 
+                    accentColor="#FFB703"
+                    bgColor="rgba(255, 183, 3, 0.02)"
                     delay={0.3}
                 />
             </div>

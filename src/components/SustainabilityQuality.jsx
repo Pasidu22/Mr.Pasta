@@ -7,7 +7,7 @@ const SustainabilityQuality = () => {
             position: 'relative',
             width: '100%',
             maxWidth: '1200px',
-            margin: '0 auto 80px',
+            margin: '0 auto 40px',
             minHeight: '450px',
             borderRadius: 'var(--radius-lg)',
             overflow: 'hidden',

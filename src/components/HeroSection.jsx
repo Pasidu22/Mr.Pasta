@@ -29,7 +29,7 @@ const HeroSection = () => {
 
   return (
     <section 
-      className="hero-premium-v4" 
+      className="hero-premium-v4 full-bleed-v4" 
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className="hero-overlay-v4"></div>

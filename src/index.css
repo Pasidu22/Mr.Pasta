@@ -27,11 +27,11 @@
   --color-terracotta-dark: var(--palette-orange-dark);
   --color-deep-black: var(--palette-black);
   --color-white: var(--palette-white);
-  --color-gray-soft: #FAF9F6; /* Adjusted for warmth */
+  --color-gray-soft: #FCF9F2; /* Artisanal Flour */
   --color-gray-border: var(--palette-gray-border);
 
-  --bg-primary: #FAF9F6; /* Global background */
-  --bg-secondary: var(--palette-gray-light);
+  --bg-primary: #FCF9F2; /* Artisanal Flour */
+  --bg-secondary: #F5F1E9; /* Light Parchment */
   --text-primary: var(--palette-black);
   --text-secondary: #666666;
   --border-primary: var(--palette-gray-border);
@@ -139,7 +139,23 @@ body {
   background: white;
   height: 80px; /* Consistent height as requested 'dont change the nav bar' except logo */
   border-bottom: 1px solid var(--color-gray-border);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+  body, html, #root, .app-layout, .main-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+}
+
+.full-bleed-v4 {
+  width: 100% !important;
+  margin: 0 !important;
+  position: relative;
+  left: 0;
 }
 
 .header-top {
@@ -211,7 +227,7 @@ body {
 .main-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 40px 60px;
+  padding: 24px 40px;
   width: 100%;
 }
 
@@ -813,5 +829,23 @@ body {
 @media (min-width: 769px) {
   .mobile-menu-btn {
     display: none !important;
+  }
+}
+
+/* Responsive Utilities */
+@media (min-width: 769px) {
+  .desktop-hide {
+    display: none !important;
+  }
+}
+
+/* Full-Bleed Utility for mobile edge-to-edge */
+@media (max-width: 768px) {
+  .full-bleed-v4 {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
   }
 }

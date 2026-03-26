@@ -15,7 +15,7 @@ const Footer = () => {
     }, []);
 
     return (
-        <footer style={{
+        <footer className="full-bleed-v4" style={{
             background: 'var(--palette-black)',
             color: 'white',
             padding: '80px 0 40px',

@@ -31,7 +31,7 @@ const Home = () => {
             <HeroSection />
 
             <div className="main-container">
-                <div style={{ marginBottom: '32px' }}>
+                <div className="desktop-hide" style={{ marginBottom: '16px' }}>
                     <CategoryCarousel />
                 </div>
 
@@ -52,7 +52,7 @@ const Home = () => {
                 <Testimonials />
 
                 {/* About Redirect Section */}
-                <div style={{ padding: '80px 20px', background: 'var(--color-gray-soft)', textAlign: 'center', borderRadius: 'var(--radius-lg)', margin: '40px 0' }}>
+                <div style={{ padding: '60px 20px', background: 'var(--color-gray-soft)', textAlign: 'center', borderRadius: 'var(--radius-lg)', margin: '20px 0' }}>
                     <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
                         <span style={{ color: 'var(--color-terracotta)', fontSize: '14px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '4px' }}>Discover More</span>
                         <h2 style={{ fontSize: '32px', fontWeight: '800', fontFamily: 'var(--font-accent)', marginBottom: '16px' }}>Quality You Can Trust</h2>
