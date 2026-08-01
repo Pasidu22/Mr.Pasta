@@ -1,9 +1,11 @@
+"use client";
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Sprout, Soup, ShieldCheck } from 'lucide-react';
 
 const CategoryCarousel = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const categories = [
         { name: 'Regular Pasta', icon: <Sprout size={28} />, color: '#4CAF50' },
         { name: 'Rice Flour Pasta', icon: <Soup size={28} />, color: '#FF9800' },
@@ -11,7 +13,7 @@ const CategoryCarousel = () => {
     ];
 
     const handleCategoryClick = (categoryName) => {
-        navigate(`/products?category=${encodeURIComponent(categoryName)}`);
+        router.push(`/products?category=${encodeURIComponent(categoryName)}`);
     };
 
     return (

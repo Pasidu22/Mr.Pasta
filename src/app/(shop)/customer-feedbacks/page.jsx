@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import Testimonials from '../components/Testimonials';
-import { api } from '../utils/api';
-import { Star, Send, CheckCircle } from 'lucide-react';
-import SEO from '../components/SEO';
+"use client";
 
-const TestimonialsPage = () => {
+import React, { useState, useEffect } from 'react';
+import Testimonials from '../../../components/Testimonials';
+import { api } from '../../../utils/api';
+import { Star, Send, CheckCircle } from 'lucide-react';
+
+export default function TestimonialsPage() {
     const [feedbacks, setFeedbacks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -43,11 +44,6 @@ const TestimonialsPage = () => {
 
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', paddingBottom: '80px' }}>
-            <SEO 
-                title="Customer Feedbacks" 
-                description="Read what our community has to say about Mr. Pasta. Real stories and reviews from lovers of gourmet Sri Lankan pasta."
-                keywords="Mr. Pasta Reviews, Customer Feedback, Sri Lanka, Gourmet Pasta, Healthy Dining, Testimonials"
-            />
             <div style={{ padding: '60px 20px', textAlign: 'center', background: 'var(--color-terracotta)', color: 'white', borderRadius: '0 0 40px 40px', marginBottom: '40px' }}>
                 <h1 style={{ fontSize: '42px', fontWeight: '800', fontFamily: 'var(--font-accent)', margin: 0 }}>Customer Feedbacks</h1>
                 <p style={{ fontSize: '18px', opacity: 0.9, marginTop: '12px' }}>Real stories from real pasta lovers across Sri Lanka</p>
@@ -155,6 +151,4 @@ const TestimonialsPage = () => {
             </div>
         </div>
     );
-};
-
-export default TestimonialsPage;
+}

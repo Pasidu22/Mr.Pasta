@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Bell, Globe, Info, Shield, ChevronRight, Share2, Star } from 'lucide-react';
+"use client";
 
-const Settings = () => {
-    const [darkMode, setDarkMode] = useState(false); // Force light mode
-    const [notifications, setNotifications] = useState(localStorage.getItem('notifications') !== 'false');
-    const [language, setLanguage] = useState(localStorage.getItem('language') || 'English');
+import React, { useState, useEffect } from 'react';
+import { Bell, Globe, Info, Shield, ChevronRight, Share2 } from 'lucide-react';
+
+export default function SettingsPage() {
+    const [notifications, setNotifications] = useState(true);
+    const [language, setLanguage] = useState('English');
 
     useEffect(() => {
-        // Force light mode on this page for now
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('theme', 'light');
+        setNotifications(localStorage.getItem('notifications') !== 'false');
+        setLanguage(localStorage.getItem('language') || 'English');
     }, []);
 
     const toggleNotification = () => {
@@ -161,6 +163,4 @@ const Settings = () => {
             </div>
         </div>
     );
-};
-
-export default Settings;
+}

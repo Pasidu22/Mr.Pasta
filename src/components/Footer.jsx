@@ -1,7 +1,12 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { api } from '../utils/api';
+import tastyIcon from '../assets/tasty.png';
+import healthyIcon from '../assets/healthy.png';
+import happyIcon from '../assets/happy.png';
 
 const Footer = () => {
     const [settings, setSettings] = useState({
@@ -60,12 +65,12 @@ const Footer = () => {
                 <div>
                     <h4 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '24px' }}>Quick Links</h4>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={{ marginBottom: '12px' }}><Link to="/" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Home</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/products" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Our Pasta</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/orders" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>My Orders</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/favorites" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Favorites</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/settings" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Settings</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/profile" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Profile</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Home</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/products" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Our Pasta</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/orders" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>My Orders</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/favorites" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Favorites</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/settings" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Settings</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/profile" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Profile</Link></li>
                     </ul>
                 </div>
 
@@ -73,10 +78,10 @@ const Footer = () => {
                 <div>
                     <h4 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '24px' }}>Learn More</h4>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={{ marginBottom: '12px' }}><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Who We Are</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Vision & Mission</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Social Impact</Link></li>
-                        <li style={{ marginBottom: '12px' }}><Link to="/#hero" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Special Offers</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Who We Are</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Vision & Mission</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/about" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Social Impact</Link></li>
+                        <li style={{ marginBottom: '12px' }}><Link href="/#hero" style={{ color: 'rgba(255, 255, 255, 0.6)', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>Special Offers</Link></li>
                     </ul>
                 </div>
 
@@ -85,15 +90,15 @@ const Footer = () => {
                     <h4 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '24px' }}>Our Philosophy</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ fontSize: '20px' }}>🍝</span>
+                            <img src={tastyIcon.src || tastyIcon} alt="Tasty Icon" style={{ width: '24px', height: '24px', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(43%) sepia(99%) saturate(3048%) hue-rotate(359deg) brightness(102%) contrast(106%)' }} />
                             <span style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>Tasty & Flavorful</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ fontSize: '20px' }}>🥗</span>
+                            <img src={healthyIcon.src || healthyIcon} alt="Healthy Icon" style={{ width: '24px', height: '24px', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(43%) sepia(99%) saturate(3048%) hue-rotate(359deg) brightness(102%) contrast(106%)' }} />
                             <span style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>Nutritious & Healthy</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ fontSize: '20px' }}>😊</span>
+                            <img src={happyIcon.src || happyIcon} alt="Happy Icon" style={{ width: '24px', height: '24px', objectFit: 'contain', filter: 'brightness(0) saturate(100%) invert(43%) sepia(99%) saturate(3048%) hue-rotate(359deg) brightness(102%) contrast(106%)' }} />
                             <span style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>Happy & Joyful</span>
                         </div>
                     </div>
@@ -122,7 +127,6 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
-
 
             {/* Bottom Bar */}
             <div style={{

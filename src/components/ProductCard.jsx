@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { Heart, Star, Plus } from 'lucide-react';
 import { api } from '../utils/api';
@@ -30,7 +32,6 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
             const updated = await api.rateProduct(id, score);
             if (updated) {
                 setCurrentRating(updated.rating);
-                // Optional: show a small toast or success msg
             }
             setIsRatingOpen(false);
         } catch (err) {
@@ -79,7 +80,6 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
             try {
                 const userObj = JSON.parse(savedUser);
                 const currentUserId = userObj.userId || userObj.uid;
-                // Convert cart format for API
                 const cartArray = Object.keys(cart).map(itemId => ({
                     productId: parseInt(itemId),
                     quantity: cart[itemId]
@@ -108,7 +108,7 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
             padding: '16px',
             transition: 'var(--transition)',
             position: 'relative',
-            overflow: 'visible', // Allow rating overlay to pop out
+            overflow: 'visible',
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
             zIndex: isRatingOpen ? 100 : 1
         }}>
@@ -161,7 +161,7 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
                         <div style={{
                             background: 'rgba(0, 0, 0, 0.05)',
                             padding: '4px 8px',
-                            borderRadius: 'full',
+                            borderRadius: '20px',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '4px',

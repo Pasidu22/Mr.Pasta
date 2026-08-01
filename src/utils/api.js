@@ -2,9 +2,18 @@
  * API utility for communicating with the Mr. Pasta Node/MongoDB backend.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL 
-    ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api` 
-    : '/api';
+const getApiUrl = () => {
+    if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) {
+        return process.env.NEXT_PUBLIC_API_URL;
+    }
+    if (typeof process !== 'undefined' && process.env.VITE_API_URL) {
+        return process.env.VITE_API_URL;
+    }
+    return '';
+};
+
+const API_BASE = `${getApiUrl().replace(/\/$/, '')}/api`;
+
 
 export const api = {
     // User Sync & Profile

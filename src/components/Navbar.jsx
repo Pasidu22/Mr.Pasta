@@ -1,60 +1,64 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown, TrendingUp, LogOut, ArrowRight, X } from 'lucide-react';
-import { Link, useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { api } from '../utils/api';
 import logo from '../assets/logo.jpg';
 
 const Navbar = ({ onCartClick, onMenuClick }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
+    const pathname = usePathname();
     const [products, setProducts] = useState([]);
     const [location, setLocation] = useState(() => {
-        const savedUser = localStorage.getItem('mr_pasta_user');
-        if (savedUser) {
-            try {
-                const user = JSON.parse(savedUser);
-                if (user.address) return user.address;
-            } catch (e) {}
+        if (typeof window !== 'undefined') {
+            const savedUser = localStorage.getItem('mr_pasta_user');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    if (user.address) return user.address;
+                } catch (e) {}
+            }
         }
         return 'Colombo, Sri Lanka';
     });
-    const [tempLocation, setTempLocation] = useState('');
     const [isLocationOpen, setIsLocationOpen] = useState(false);
-    
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [user, setUser] = useState(null);
     const [cartCount, setCartCount] = useState(0);
     const [isScrolled, setIsScrolled] = useState(false);
-    const routerLocation = useLocation();
-    const isHomePage = routerLocation.pathname === '/';
+    const isHomePage = pathname === '/';
     const searchRef = useRef(null);
 
-    useEffect(() => {
-        const syncData = async () => {
-            const cartList = JSON.parse(localStorage.getItem('mr_pasta_cart') || '{}');
-            const total = Object.values(cartList).reduce((a, b) => {
-                const qty = parseInt(b) || 0;
-                return a + qty;
-            }, 0);
-            setCartCount(total);
+    const syncData = async () => {
+        if (typeof window === 'undefined') return;
+        const cartList = JSON.parse(localStorage.getItem('mr_pasta_cart') || '{}');
+        const total = Object.values(cartList).reduce((a, b) => {
+            const qty = parseInt(b) || 0;
+            return a + qty;
+        }, 0);
+        setCartCount(total);
 
+        try {
+            const data = await api.getProducts();
+            setProducts(data);
+        } catch (e) {}
+
+        const savedUser = localStorage.getItem('mr_pasta_user');
+        if (savedUser) {
             try {
-                const data = await api.getProducts();
-                setProducts(data);
+                const parsed = JSON.parse(savedUser);
+                setUser(parsed);
+                if (parsed.address) setLocation(parsed.address);
             } catch (e) {}
+        } else {
+            setUser(null);
+        }
+    };
 
-            const savedUser = localStorage.getItem('mr_pasta_user');
-            if (savedUser) {
-                try {
-                    const parsed = JSON.parse(savedUser);
-                    setUser(parsed);
-                    if (parsed.address) setLocation(parsed.address);
-                } catch (e) {}
-            } else {
-                setUser(null);
-            }
-        };
-
+    useEffect(() => {
         syncData();
 
         const handleScroll = () => {
@@ -98,6 +102,15 @@ const Navbar = ({ onCartClick, onMenuClick }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const NavLink = ({ href, children }) => {
+        const isActive = pathname === href;
+        return (
+            <Link href={href} className={`nav-link ${isActive ? 'active' : ''}`}>
+                {children}
+            </Link>
+        );
+    };
+
     return (
         <header className={`header ${isScrolled ? 'is-scrolled' : ''} ${!isHomePage ? 'is-solid-page' : ''}`}>
             <div className="header-top">
@@ -120,8 +133,8 @@ const Navbar = ({ onCartClick, onMenuClick }) => {
                     >
                         <Menu size={24} style={{ color: '#000000' }} />
                     </button>
-                    <Link to="/" className="navbar-logo-link">
-                        <img src={logo} alt="Mr. Pasta" className="navbar-logo" />
+                    <Link href="/" className="navbar-logo-link">
+                        <img src={logo.src || logo} alt="Mr. Pasta" className="navbar-logo" />
                     </Link>
                     <div className="search-bar">
                         <Search size={20} color={isSearchFocused ? "var(--color-terracotta)" : "#666"} />
@@ -186,7 +199,7 @@ const Navbar = ({ onCartClick, onMenuClick }) => {
                                                 <div 
                                                     key={p.id}
                                                     onClick={() => {
-                                                        navigate(`/products?category=${encodeURIComponent(p.category)}&productId=${p.id}`);
+                                                        router.push(`/products?category=${encodeURIComponent(p.category)}&productId=${p.id}`);
                                                         setIsSearchFocused(false);
                                                         setSearchQuery('');
                                                     }}
@@ -223,12 +236,12 @@ const Navbar = ({ onCartClick, onMenuClick }) => {
                 </div>
 
                 <nav className="desktop-nav">
-                    <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Home</NavLink>
-                    <NavLink to="/products" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Our Pasta</NavLink>
-                    <NavLink to="/orders" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Orders</NavLink>
-                    <NavLink to="/favorites" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Favorites</NavLink>
-                    <NavLink to="/customer-feedbacks" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Customer feedbacks</NavLink>
-                    <NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About Us</NavLink>
+                    <NavLink href="/">Home</NavLink>
+                    <NavLink href="/products">Our Pasta</NavLink>
+                    <NavLink href="/orders">Orders</NavLink>
+                    <NavLink href="/favorites">Favorites</NavLink>
+                    <NavLink href="/customer-feedbacks">Customer feedbacks</NavLink>
+                    <NavLink href="/about">About Us</NavLink>
                 </nav>
 
                 <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
@@ -316,7 +329,7 @@ const Navbar = ({ onCartClick, onMenuClick }) => {
                                 <button
                                     onClick={() => {
                                         setIsLocationOpen(false);
-                                        navigate('/profile?edit=true');
+                                        router.push('/profile?edit=true');
                                     }}
                                     style={{
                                         width: '100%',
@@ -366,7 +379,7 @@ const Navbar = ({ onCartClick, onMenuClick }) => {
 
                     {user ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Link to="/profile" className="profile-link-nav" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', textDecoration: 'none', color: 'inherit', transition: 'var(--transition)' }}>
+                            <Link href="/profile" className="profile-link-nav" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', textDecoration: 'none', color: 'inherit', transition: 'var(--transition)' }}>
                                 <div style={{
                                     width: '36px',
                                     height: '36px',

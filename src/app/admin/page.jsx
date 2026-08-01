@@ -1,12 +1,14 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { 
     LayoutDashboard, Package, ShoppingBag, Settings as SettingsIcon, 
     Plus, Edit2, Trash2, CheckCircle, Clock, Truck, XCircle, CreditCard,
     Save, RefreshCcw, Phone, Mail, MapPin, MessageSquare, ArrowLeft,
-    Upload, Image as ImageIcon, Minimize2, Maximize2, Star
+    Upload, Minimize2, Maximize2, Star
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { api } from '../utils/api';
+import Link from 'next/link';
+import { api } from '../../utils/api';
 
 const Admin = () => {
     const [activeTab, setActiveTab] = useState('orders');
@@ -20,7 +22,6 @@ const Admin = () => {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    // Fetch Initial Data
     useEffect(() => {
         if (isPasswordVerified) {
             fetchData();
@@ -51,7 +52,6 @@ const Admin = () => {
             }
         } finally {
             setLoading(false);
-            // Artificial delay to show the animation (optional but satisfying)
             setTimeout(() => setIsRefreshing(false), 800);
         }
     };
@@ -89,61 +89,57 @@ const Admin = () => {
 
     return (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--color-gray-soft)' }}>
-            {/* Fixed Header & Tabs Container */}
             <div style={{ padding: '40px 20px 0 20px', maxWidth: '1200px', margin: '0 auto', width: '100%', flexShrink: 0 }}>
-                {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <Link to="/" style={{ 
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                        width: '40px', height: '40px', borderRadius: '12px', 
-                        background: 'white', border: '1px solid #eee', color: '#666', 
-                        transition: '0.3s',
-                        textDecoration: 'none'
-                    }} title="Back to Store">
-                        <ArrowLeft size={20} />
-                    </Link>
-                    <div>
-                        <h1 style={{ fontSize: '32px', fontWeight: '800', margin: 0 }}>Dashboard</h1>
-                        <p style={{ color: '#666', margin: '4px 0 0 0' }}>Last updated: {lastUpdated.toLocaleTimeString()}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                        <Link href="/" style={{ 
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                            width: '40px', height: '40px', borderRadius: '12px', 
+                            background: 'white', border: '1px solid #eee', color: '#666', 
+                            transition: '0.3s',
+                            textDecoration: 'none'
+                        }} title="Back to Store">
+                            <ArrowLeft size={20} />
+                        </Link>
+                        <div>
+                            <h1 style={{ fontSize: '32px', fontWeight: '800', margin: 0 }}>Dashboard</h1>
+                            <p style={{ color: '#666', margin: '4px 0 0 0' }}>Last updated: {lastUpdated.toLocaleTimeString()}</p>
+                        </div>
                     </div>
-                </div>
-                <button onClick={fetchData} title="Sync Data" style={{ 
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    background: 'white', border: '1px solid #eee', padding: '10px 16px', borderRadius: '12px', cursor: 'pointer',
-                    transition: 'all 0.3s'
-                }} className="hover-scale">
-                    <RefreshCcw size={18} className={isRefreshing ? 'spin' : ''} />
-                    <span style={{ fontSize: '14px', fontWeight: '700' }}>Sync</span>
-                </button>
-            </div>
-
-            {/* Tabs */}
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', overflowX: 'auto', paddingBottom: '8px' }}>
-                {[
-                    { id: 'orders', label: 'Orders', icon: ShoppingBag },
-                    { id: 'products', label: 'Products', icon: Package },
-                    { id: 'feedbacks', label: 'Feedbacks', icon: MessageSquare },
-                    { id: 'settings', label: 'Site Settings', icon: SettingsIcon }
-                ].map(tab => (
-                    <button 
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '16px', border: 'none', cursor: 'pointer',
-                            background: activeTab === tab.id ? 'var(--color-terracotta)' : 'white',
-                            color: activeTab === tab.id ? 'white' : '#666',
-                            fontWeight: '700', fontSize: '15px', transition: 'all 0.3s ease',
-                            boxShadow: activeTab === tab.id ? '0 10px 20px rgba(255, 92, 0, 0.2)' : 'none'
-                        }}
-                    >
-                        <tab.icon size={18} /> {tab.label}
+                    <button onClick={fetchData} title="Sync Data" style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px',
+                        background: 'white', border: '1px solid #eee', padding: '10px 16px', borderRadius: '12px', cursor: 'pointer',
+                        transition: 'all 0.3s'
+                    }} className="hover-scale">
+                        <RefreshCcw size={18} className={isRefreshing ? 'spin' : ''} />
+                        <span style={{ fontSize: '14px', fontWeight: '700' }}>Sync</span>
                     </button>
-                ))}
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', overflowX: 'auto', paddingBottom: '8px' }}>
+                    {[
+                        { id: 'orders', label: 'Orders', icon: ShoppingBag },
+                        { id: 'products', label: 'Products', icon: Package },
+                        { id: 'feedbacks', label: 'Feedbacks', icon: MessageSquare },
+                        { id: 'settings', label: 'Site Settings', icon: SettingsIcon }
+                    ].map(tab => (
+                        <button 
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '16px', border: 'none', cursor: 'pointer',
+                                background: activeTab === tab.id ? 'var(--color-terracotta)' : 'white',
+                                color: activeTab === tab.id ? 'white' : '#666',
+                                fontWeight: '700', fontSize: '15px', transition: 'all 0.3s ease',
+                                boxShadow: activeTab === tab.id ? '0 10px 20px rgba(255, 92, 0, 0.2)' : 'none'
+                            }}
+                        >
+                            <tab.icon size={18} /> {tab.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Scrollable Content Area */}
             <div className="hide-scrollbar" style={{ 
                 flex: 1, 
                 overflowY: 'auto', 
@@ -190,7 +186,6 @@ const OrdersTab = ({ orders, onUpdate }) => {
         return matchesName && matchesMonth;
     });
 
-    // Generate month options from available orders
     const monthOptions = [...new Set(orders.map(order => {
         const d = new Date(order.createdAt);
         return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}`;
@@ -203,7 +198,6 @@ const OrdersTab = ({ orders, onUpdate }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Filter Bar */}
             <div style={{ 
                 display: 'flex', 
                 gap: '16px', 
@@ -315,13 +309,11 @@ const ProductsTab = ({ products, onUpdate }) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Check if file is an image
         if (!file.type.startsWith('image/')) {
             alert('Please upload an image file');
             return;
         }
 
-        // Limit size (e.g., 2MB)
         if (file.size > 2 * 1024 * 1024) {
             alert('Image size should be less than 2MB');
             return;
@@ -370,7 +362,6 @@ const ProductsTab = ({ products, onUpdate }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {/* Search Bar - Sticky at Top of Tab */}
             <div style={{ position: 'sticky', top: '0px', background: 'var(--color-gray-soft)', paddingBottom: '20px', zIndex: 10, margin: '0 0 10px 0' }}>
                 <input 
                     placeholder="Search products by name or category..." 
@@ -381,7 +372,6 @@ const ProductsTab = ({ products, onUpdate }) => {
             </div>
 
             <div className="admin-products-layout">
-                {/* List */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {filteredProducts.map(p => (
                         <div key={p.id} title={p.desc} style={{ background: 'white', padding: '16px', borderRadius: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
@@ -397,7 +387,7 @@ const ProductsTab = ({ products, onUpdate }) => {
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <button onClick={() => {
                                     setEditingProduct(p);
-                                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll up to see the form
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
                                 }} style={{ padding: '8px', borderRadius: '10px', border: '1px solid #eee', background: 'none', cursor: 'pointer' }}><Edit2 size={16} /></button>
                                 <button onClick={() => handleDelete(p.id)} style={{ padding: '8px', borderRadius: '10px', border: '1px solid #fee2e2', background: 'none', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={16} /></button>
                             </div>
@@ -405,109 +395,108 @@ const ProductsTab = ({ products, onUpdate }) => {
                     ))}
                 </div>
 
-            <div style={{ 
-                background: 'white', 
-                padding: isMinimized ? '12px 20px' : '16px 20px', 
-                borderRadius: '24px', 
-                position: 'sticky', 
-                top: '0px', 
-                boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-                transition: 'all 0.3s ease'
-            }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMinimized ? '0' : '16px' }}>
-                    <h3 style={{ margin: 0, fontSize: '18px' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
-                    <button 
-                        onClick={() => setIsMinimized(!isMinimized)}
-                        style={{ background: '#f5f5f5', border: 'none', borderRadius: '10px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#666' }}
-                        title={isMinimized ? "Expand" : "Minimize"}
-                    >
-                        {isMinimized ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
-                    </button>
-                </div>
+                <div style={{ 
+                    background: 'white', 
+                    padding: isMinimized ? '12px 20px' : '16px 20px', 
+                    borderRadius: '24px', 
+                    position: 'sticky', 
+                    top: '0px', 
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+                    transition: 'all 0.3s ease'
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMinimized ? '0' : '16px' }}>
+                        <h3 style={{ margin: 0, fontSize: '18px' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
+                        <button 
+                            onClick={() => setIsMinimized(!isMinimized)}
+                            style={{ background: '#f5f5f5', border: 'none', borderRadius: '10px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#666' }}
+                            title={isMinimized ? "Expand" : "Minimize"}
+                        >
+                            {isMinimized ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
+                        </button>
+                    </div>
 
-                {!isMinimized && (
-                    <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <input required placeholder="Product Name" value={editingProduct?.name || newProduct.name} onChange={e => editingProduct ? setEditingProduct({...editingProduct, name: e.target.value}) : setNewProduct({...newProduct, name: e.target.value})} style={{ flex: 1.5, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
-                        <select value={editingProduct?.category || newProduct.category} onChange={e => editingProduct ? setEditingProduct({...editingProduct, category: e.target.value}) : setNewProduct({...newProduct, category: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }}>
-                            <option>Regular Pasta</option>
-                            <option>Rice Flour Pasta</option>
-                            <option>Gluten-Free</option>
-                        </select>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <input required type="number" placeholder="Price (Rs.)" value={editingProduct?.price || newProduct.price} onChange={e => editingProduct ? setEditingProduct({...editingProduct, price: e.target.value}) : setNewProduct({...newProduct, price: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
-                        <input required type="number" step="0.1" min="1" max="5" placeholder="Rating (1-5)" value={editingProduct?.rating || newProduct.rating} onChange={e => editingProduct ? setEditingProduct({...editingProduct, rating: e.target.value}) : setNewProduct({...newProduct, rating: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
-                    </div>
-                    
-                    {/* Image Upload Section */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <label style={{ fontSize: '13px', fontWeight: '800', marginBottom: '2px' }}>Product Image</label>
-                        <div style={{ 
-                            display: 'flex', 
-                            gap: '10px', 
-                            alignItems: 'center',
-                            padding: '8px 12px',
-                            border: '1px solid #eee',
-                            borderRadius: '12px'
-                        }}>
-                            <div style={{ width: '45px', height: '45px', borderRadius: '10px', background: '#f5f5f5', overflow: 'hidden', flexShrink: 0 }}>
-                                <img src={editingProduct?.image || newProduct.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {!isMinimized && (
+                        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <input required placeholder="Product Name" value={editingProduct?.name || newProduct.name} onChange={e => editingProduct ? setEditingProduct({...editingProduct, name: e.target.value}) : setNewProduct({...newProduct, name: e.target.value})} style={{ flex: 1.5, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
+                                <select value={editingProduct?.category || newProduct.category} onChange={e => editingProduct ? setEditingProduct({...editingProduct, category: e.target.value}) : setNewProduct({...newProduct, category: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }}>
+                                    <option>Regular Pasta</option>
+                                    <option>Rice Flour Pasta</option>
+                                    <option>Gluten-Free</option>
+                                </select>
                             </div>
-                            <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <input required type="number" placeholder="Price (Rs.)" value={editingProduct?.price || newProduct.price} onChange={e => editingProduct ? setEditingProduct({...editingProduct, price: e.target.value}) : setNewProduct({...newProduct, price: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
+                                <input required type="number" step="0.1" min="1" max="5" placeholder="Rating (1-5)" value={editingProduct?.rating || newProduct.rating} onChange={e => editingProduct ? setEditingProduct({...editingProduct, rating: e.target.value}) : setNewProduct({...newProduct, rating: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <label style={{ fontSize: '13px', fontWeight: '800', marginBottom: '2px' }}>Product Image</label>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    gap: '10px', 
+                                    alignItems: 'center',
+                                    padding: '8px 12px',
+                                    border: '1px solid #eee',
+                                    borderRadius: '12px'
+                                }}>
+                                    <div style={{ width: '45px', height: '45px', borderRadius: '10px', background: '#f5f5f5', overflow: 'hidden', flexShrink: 0 }}>
+                                        <img src={editingProduct?.image || newProduct.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    </div>
+                                    <div style={{ flex: 1 }}>
+                                        <input 
+                                            type="file" 
+                                            accept="image/*" 
+                                            onChange={handleImageUpload} 
+                                            style={{ display: 'none' }} 
+                                            ref={fileInputRef} 
+                                        />
+                                        <button 
+                                            type="button" 
+                                            onClick={() => fileInputRef.current.click()}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '8px',
+                                                padding: '8px 16px',
+                                                background: '#f5f5f5',
+                                                border: 'none',
+                                                borderRadius: '10px',
+                                                fontSize: '13px',
+                                                fontWeight: '700',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            <Upload size={16} /> Choose Image
+                                        </button>
+                                        <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: '#888' }}>Phone gallery or PC storage</p>
+                                    </div>
+                                </div>
                                 <input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    onChange={handleImageUpload} 
-                                    style={{ display: 'none' }} 
-                                    ref={fileInputRef} 
+                                    placeholder="Or enter Image URL" 
+                                    value={editingProduct?.image || newProduct.image} 
+                                    onChange={e => editingProduct ? setEditingProduct({...editingProduct, image: e.target.value}) : setNewProduct({...newProduct, image: e.target.value})} 
+                                    style={{ padding: '8px 12px', borderRadius: '10px', border: '1px solid #eee', fontSize: '12px' }} 
                                 />
-                                <button 
-                                    type="button" 
-                                    onClick={() => fileInputRef.current.click()}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        padding: '8px 16px',
-                                        background: '#f5f5f5',
-                                        border: 'none',
-                                        borderRadius: '10px',
-                                        fontSize: '13px',
-                                        fontWeight: '700',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <Upload size={16} /> Choose Image
-                                </button>
-                                <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: '#888' }}>Phone gallery or PC storage</p>
                             </div>
-                        </div>
-                        <input 
-                            placeholder="Or enter Image URL" 
-                            value={editingProduct?.image || newProduct.image} 
-                            onChange={e => editingProduct ? setEditingProduct({...editingProduct, image: e.target.value}) : setNewProduct({...newProduct, image: e.target.value})} 
-                            style={{ padding: '8px 12px', borderRadius: '10px', border: '1px solid #eee', fontSize: '12px' }} 
-                        />
-                    </div>
 
-                    <textarea placeholder="Description" value={editingProduct?.desc || newProduct.desc} onChange={e => editingProduct ? setEditingProduct({...editingProduct, desc: e.target.value}) : setNewProduct({...newProduct, desc: e.target.value})} style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid #eee', minHeight: '60px', fontSize: '13px' }} />
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        {editingProduct && <button type="button" onClick={() => setEditingProduct(null)} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee', cursor: 'pointer', fontSize: '14px' }}>Cancel</button>}
-                        <button type="submit" style={{ flex: 2, padding: '12px', background: 'var(--color-deep-black)', color: 'white', borderRadius: '12px', border: 'none', fontWeight: '800', cursor: 'pointer', fontSize: '14px' }}>{editingProduct ? 'Update Product' : 'Add Product'}</button>
-                    </div>
-                </form>
-                )}
+                            <textarea placeholder="Description" value={editingProduct?.desc || newProduct.desc} onChange={e => editingProduct ? setEditingProduct({...editingProduct, desc: e.target.value}) : setNewProduct({...newProduct, desc: e.target.value})} style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid #eee', minHeight: '60px', fontSize: '13px' }} />
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                {editingProduct && <button type="button" onClick={() => setEditingProduct(null)} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee', cursor: 'pointer', fontSize: '14px' }}>Cancel</button>}
+                                <button type="submit" style={{ flex: 2, padding: '12px', background: 'var(--color-deep-black)', color: 'white', borderRadius: '12px', border: 'none', fontWeight: '800', cursor: 'pointer', fontSize: '14px' }}>{editingProduct ? 'Update Product' : 'Add Product'}</button>
+                            </div>
+                        </form>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
 };
 
 const SettingsTab = ({ settings, onUpdate }) => {
     const [formData, setFormData] = useState({
         deliveryFee: settings?.deliveryFee || 250,
-        deliveryChargesEnabled: settings?.deliveryChargesEnabled !== false, // Default to true
+        deliveryChargesEnabled: settings?.deliveryChargesEnabled !== false,
         whatsappNumber: settings?.whatsappNumber || '94729280262',
         bankDetails: settings?.bankDetails || '',
         contactPhone: settings?.contactPhone || '+94 72 928 0262',
@@ -520,7 +509,6 @@ const SettingsTab = ({ settings, onUpdate }) => {
             setFormData(prev => ({
                 ...prev,
                 ...settings,
-                // Ensure boolean fields are correctly handled if missing in server data
                 deliveryChargesEnabled: settings.deliveryChargesEnabled !== false
             }));
         }
@@ -550,28 +538,28 @@ const SettingsTab = ({ settings, onUpdate }) => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <label style={{ fontSize: '14px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}><Truck size={16} /> Delivery Fee (Rs.)</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0' }}>
-                <input 
-                    type="checkbox" 
-                    id="deliveryToggle"
-                    checked={formData.deliveryChargesEnabled} 
-                    onChange={e => setFormData({...formData, deliveryChargesEnabled: e.target.checked})} 
-                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
-                />
-                <label htmlFor="deliveryToggle" style={{ fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}>Enable Delivery Charges</label>
-            </div>
+                            <input 
+                                type="checkbox" 
+                                id="deliveryToggle"
+                                checked={formData.deliveryChargesEnabled} 
+                                onChange={e => setFormData({...formData, deliveryChargesEnabled: e.target.checked})} 
+                                style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                            />
+                            <label htmlFor="deliveryToggle" style={{ fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}>Enable Delivery Charges</label>
+                        </div>
 
-            {formData.deliveryChargesEnabled && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '13px', fontWeight: '700', color: '#666' }}>Delivery Fee (Rs.)</label>
-                    <input 
-                        placeholder="Delivery Fee" 
-                        type="number" 
-                        value={formData.deliveryFee} 
-                        onChange={e => setFormData({...formData, deliveryFee: e.target.value})} 
-                        style={{ padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} 
-                    />
-                </div>
-            )}
+                        {formData.deliveryChargesEnabled && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <label style={{ fontSize: '13px', fontWeight: '700', color: '#666' }}>Delivery Fee (Rs.)</label>
+                                <input 
+                                    placeholder="Delivery Fee" 
+                                    type="number" 
+                                    value={formData.deliveryFee} 
+                                    onChange={e => setFormData({...formData, deliveryFee: e.target.value})} 
+                                    style={{ padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} 
+                                />
+                            </div>
+                        )}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <label style={{ fontSize: '14px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}><CreditCard size={16} /> Bank Details (Shown at Checkout)</label>
@@ -631,7 +619,6 @@ const FeedbacksTab = ({ feedbacks, onUpdate }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-            {/* Pending Section */}
             <div>
                 <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Clock size={20} color="var(--color-terracotta)" /> 
@@ -650,7 +637,6 @@ const FeedbacksTab = ({ feedbacks, onUpdate }) => {
                 )}
             </div>
 
-            {/* Approved Section */}
             <div>
                 <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <CheckCircle size={20} color="#22c55e" /> 

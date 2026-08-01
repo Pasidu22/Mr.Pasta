@@ -1,30 +1,48 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { HeartHandshake } from 'lucide-react';
 import apekshaImg from '../assets/apeksha.png';
 
 const SocialImpact = () => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 992);
+        const handleResize = () => setIsMobile(window.innerWidth < 992);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const burgundyTheme = {
+        primary: '#9B1C31',
+        secondary: '#722F37',
+        bg: '#FDFBFB',
+        accent: '#D9A0A8',
+        lightBg: '#F9F1F2'
+    };
+
     return (
         <section style={{ 
-            margin: '40px 0', 
-            background: 'linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%)',
-            borderRadius: '40px',
+            margin: '0', 
+            background: '#FFFFFF',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 30px 60px rgba(255, 105, 180, 0.1)',
-            border: '1px solid rgba(255, 192, 203, 0.3)',
             display: 'flex',
-            flexDirection: window.innerWidth < 992 ? 'column' : 'row',
+            flexDirection: isMobile ? 'column' : 'row',
             alignItems: 'stretch',
-            minHeight: '400px'
+            minHeight: '600px',
+            width: '100%'
         }}>
-            {/* Image Side with creative mask */}
+            {/* Image Column */}
             <div style={{
                 flex: '1',
                 position: 'relative',
-                minHeight: '400px',
+                minHeight: isMobile ? '350px' : '600px',
                 overflow: 'hidden'
-            }}>
+            }} className="animate-social-img">
                 <img 
-                    src={apekshaImg} 
+                    src={apekshaImg.src || apekshaImg} 
                     alt="Supporting Apeksha Hospital" 
                     style={{
                         width: '100%',
@@ -40,54 +58,68 @@ const SocialImpact = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: window.innerWidth < 992 
-                        ? 'linear-gradient(to bottom, transparent 70%, #FFF5F7 100%)'
-                        : 'linear-gradient(to right, transparent 70%, #FFF5F7 100%)',
+                    background: isMobile 
+                        ? `linear-gradient(to bottom, rgba(0,0,0,0.15) 50%, ${burgundyTheme.bg} 100%)`
+                        : `linear-gradient(to right, rgba(0,0,0,0.15) 50%, ${burgundyTheme.bg} 100%)`,
                     pointerEvents: 'none'
                 }}></div>
-                
             </div>
 
-            {/* Content Side */}
+            {/* Content Column */}
             <div style={{ 
                 flex: '1.2', 
-                padding: '40px', 
+                background: `linear-gradient(135deg, ${burgundyTheme.bg} 0%, ${burgundyTheme.lightBg} 100%)`,
+                padding: isMobile ? '48px 24px' : '100px 80px', 
                 position: 'relative', 
                 zIndex: 2,
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center'
-            }}>
+                justifyContent: 'center',
+                alignItems: 'flex-start'
+            }} className="animate-social-text">
                 <div style={{ marginBottom: '28px' }}>
+                    <span style={{
+                        color: burgundyTheme.primary,
+                        fontSize: '14px',
+                        fontWeight: '800',
+                        textTransform: 'uppercase',
+                        letterSpacing: '5px',
+                        display: 'block',
+                        marginBottom: '12px'
+                    }}>
+                        Golden Hearts Project
+                    </span>
                     <h2 style={{ 
-                        fontSize: '38px', 
+                        fontSize: 'clamp(36px, 5vw, 48px)', 
                         fontWeight: '800', 
-                        color: '#C71585', 
+                        color: burgundyTheme.primary, 
                         margin: 0,
                         letterSpacing: '-1.5px',
-                        lineHeight: '1.1'
+                        lineHeight: '1.1',
+                        fontFamily: 'var(--font-accent)'
                     }}>
                         Giving Back to Society
                     </h2>
                     <div style={{ 
                         height: '4px', 
-                        width: '80px', 
-                        background: '#DB7093', 
+                        width: '60px', 
+                        background: burgundyTheme.primary, 
                         borderRadius: '2px',
-                        marginTop: '12px'
+                        marginTop: '16px'
                     }}></div>
                 </div>
 
                 <p style={{ 
                     fontSize: '19px', 
-                    lineHeight: '1.7', 
+                    lineHeight: '1.8', 
                     color: '#444', 
                     marginBottom: '40px',
-                    fontWeight: '500'
+                    fontWeight: '400',
+                    maxWidth: '620px'
                 }}>
-                    Through our <span style={{ color: '#C71585', fontWeight: '800', fontStyle: 'italic' }}>"Golden hearts"</span> project, 
-                    a portion of our profits supports patients at the 
-                    <span style={{ color: '#C71585', fontWeight: '800', borderBottom: '2px solid rgba(199, 21, 133, 0.2)', marginLeft: '6px' }}>
+                    Through our <span style={{ color: burgundyTheme.primary, fontWeight: '800', fontStyle: 'italic' }}>"Golden hearts"</span> project, 
+                    a portion of our profits directly supports patients at the 
+                    <span style={{ color: burgundyTheme.primary, fontWeight: '800', borderBottom: '2px solid rgba(155, 28, 49, 0.2)', marginLeft: '6px' }}>
                         Apeksha Hospital
                     </span>, 
                     contributing to critical cancer care in Sri Lanka. 
@@ -96,38 +128,72 @@ const SocialImpact = () => {
 
                 <div style={{ 
                     background: 'white', 
-                    padding: '24px 34px', 
-                    borderRadius: '28px',
-                    border: '1px solid rgba(255, 105, 180, 0.15)',
+                    padding: '20px 28px', 
+                    borderRadius: '100px',
+                    border: '1px solid rgba(155, 28, 49, 0.12)',
                     display: 'inline-block',
-                    boxShadow: '0 15px 40px rgba(255, 105, 180, 0.08)',
+                    boxShadow: '0 12px 30px rgba(155, 28, 49, 0.04)',
                     width: 'fit-content'
                 }} className="hover-lift">
                     <div style={{ 
-                        fontSize: '18px', 
+                        fontSize: '15px', 
                         fontWeight: '700', 
-                        color: '#C71585',
+                        color: burgundyTheme.primary,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '14px'
+                        gap: '12px'
                     }}>
                         <div style={{ 
-                            background: '#C71585', 
+                            background: burgundyTheme.primary, 
                             color: 'white', 
-                            width: '32px', 
-                            height: '32px', 
+                            width: '36px', 
+                            height: '36px', 
                             borderRadius: '50%', 
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center',
-                            fontSize: '16px'
+                            boxShadow: '0 4px 10px rgba(155, 28, 49, 0.2)'
                         }}>
-                            🎗️
+                            <HeartHandshake size={18} />
                         </div>
-                        “Every Pack You Buy = A Small Contribution to Saving Lives”
+                        <span>Every Pack You Buy = A Small Contribution to Saving Lives</span>
                     </div>
                 </div>
             </div>
+
+            {/* Scope styles for animations */}
+            <style>{`
+                .animate-social-img {
+                    opacity: 0;
+                    transform: translateX(-40px);
+                    animation: slideInSocialImg 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                .animate-social-text {
+                    opacity: 0;
+                    transform: translateX(40px);
+                    animation: slideInSocialText 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+                }
+                @keyframes slideInSocialImg {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-40px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+                @keyframes slideInSocialText {
+                    from {
+                        opacity: 0;
+                        transform: translateX(40px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+            `}</style>
         </section>
     );
 };

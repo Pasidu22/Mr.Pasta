@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
-import { api } from '../utils/api';
-import SEO from '../components/SEO';
+"use client";
 
-const Products = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+import React, { useEffect, useState } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import ProductCard from '../../../components/ProductCard';
+import { api } from '../../../utils/api';
+
+const ProductsClient = () => {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
     const activeCategory = searchParams.get('category') || 'All';
     const productId = searchParams.get('productId');
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
     
     useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        
         api.getProducts().then(data => {
             setProducts(data);
             setLoading(false);
@@ -19,16 +28,16 @@ const Products = () => {
             console.error("Fetch products error:", err);
             setLoading(false);
         });
+
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     useEffect(() => {
         if (!loading && productId) {
-            // Short delay to ensure the content is rendered
             const timer = setTimeout(() => {
                 const element = document.getElementById(`product-${productId}`);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Add a temporary highlight effect
                     element.style.transition = 'all 0.5s ease';
                     element.style.outline = '2px solid var(--color-terracotta)';
                     element.style.boxShadow = '0 0 20px rgba(255, 92, 0, 0.3)';
@@ -40,18 +49,18 @@ const Products = () => {
             }, 300);
             return () => clearTimeout(timer);
         }
-    }, [productId, activeCategory]);
+    }, [productId, activeCategory, loading]);
     
-    // Group products by category
     const allCategories = ['All', ...new Set(products.map(p => p.category))];
 
     const handleCategoryChange = (category) => {
+        const params = new URLSearchParams(searchParams.toString());
         if (category === 'All') {
-            searchParams.delete('category');
+            params.delete('category');
         } else {
-            searchParams.set('category', category);
+            params.set('category', category);
         }
-        setSearchParams(searchParams);
+        router.push(`${pathname}?${params.toString()}`);
     };
 
     const filteredCategories = activeCategory === 'All'
@@ -82,12 +91,6 @@ const Products = () => {
             paddingTop: 'var(--header-height, 80px)', 
             paddingBottom: '40px' 
         }}>
-            <SEO 
-                title={activeCategory === 'All' ? "Our Products" : `${activeCategory} Pasta`}
-                description={`Browse our premium range of ${activeCategory === 'All' ? 'traditional and healthy' : activeCategory} pasta. High quality, factory-direct prices in Sri Lanka.`}
-                keywords={`Mr. Pasta, ${activeCategory}, Rice Flour Pasta, Gluten Free, Sri Lanka, Healthy Dining`}
-            />
-
             <div className="main-container" style={{ paddingTop: '40px' }}>
                 <div style={{ marginBottom: '48px', textAlign: 'center' }}>
                     <h1 style={{ 
@@ -103,10 +106,9 @@ const Products = () => {
                         Explore our diverse range of premium pasta, from traditional wheat to healthy gluten-free options.
                     </p>
 
-                    {/* Category Filter Bar - Horizontal Scroll on Mobile */}
                     <div className="hide-scrollbar" style={{ 
                         display: 'flex', 
-                        justifyContent: window.innerWidth < 768 ? 'flex-start' : 'center', 
+                        justifyContent: isMobile ? 'flex-start' : 'center', 
                         gap: '12px', 
                         overflowX: 'auto',
                         padding: '12px 4px',
@@ -120,7 +122,7 @@ const Products = () => {
                             background: 'var(--color-gray-soft)',
                             padding: '6px',
                             borderRadius: '40px',
-                            margin: window.innerWidth < 768 ? '0' : '0 auto'
+                            margin: isMobile ? '0' : '0 auto'
                         }}>
                             {allCategories.map(cat => (
                                 <button
@@ -197,4 +199,4 @@ const Products = () => {
     );
 };
 
-export default Products;
+export default ProductsClient;

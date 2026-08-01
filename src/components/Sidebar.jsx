@@ -1,10 +1,13 @@
+"use client";
+
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingBasket, Clock, User, Heart, Settings, LogOut, X, MessageSquare } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { Home as HomeIcon, ShoppingBasket, Clock, User, Heart, Settings, LogOut, X, MessageSquare } from 'lucide-react';
 import logo from '../assets/logo.jpg';
 
 const Sidebar = ({ isOpen, onClose }) => {
-    const location = useLocation();
+    const pathname = usePathname();
     const [user, setUser] = React.useState(null);
 
     React.useEffect(() => {
@@ -34,7 +37,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     };
 
     const menuItems = [
-        { name: 'Home', path: '/', icon: <Home size={20} /> },
+        { name: 'Home', path: '/', icon: <HomeIcon size={20} /> },
         { name: 'Products', path: '/products', icon: <ShoppingBasket size={20} /> },
         { name: 'Orders', path: '/orders', icon: <Clock size={20} /> },
         { name: 'Favorites', path: '/favorites', icon: <Heart size={20} /> },
@@ -46,7 +49,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <aside className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
             <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <img src={logo} alt="Mr. Pasta Logo" style={{ height: '32px', width: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <img src={logo.src || logo} alt="Mr. Pasta Logo" style={{ height: '32px', width: '32px', borderRadius: '50%', objectFit: 'cover' }} />
                     <h2 style={{ color: 'var(--color-terracotta)', fontSize: '1.2rem', fontFamily: 'var(--font-brand)', margin: 0 }}>
                         MR. PASTA
                     </h2>
@@ -59,7 +62,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         border: 'none', 
                         cursor: 'pointer',
                         padding: '4px',
-                        display: 'none', // Hidden on desktop
+                        display: 'none',
                         color: '#666'
                     }}
                 >
@@ -72,7 +75,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {menuItems.map((item) => (
                         <li key={item.name}>
                             <Link 
-                                to={item.path} 
+                                href={item.path} 
                                 onClick={onClose}
                                 style={{ 
                                     display: 'flex', 
@@ -80,10 +83,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                                     gap: '12px', 
                                     padding: '12px 16px', 
                                     textDecoration: 'none', 
-                                    color: location.pathname === item.path ? 'var(--color-terracotta)' : 'inherit',
-                                    backgroundColor: location.pathname === item.path ? 'var(--color-gray-soft)' : 'transparent',
+                                    color: pathname === item.path ? 'var(--color-terracotta)' : 'inherit',
+                                    backgroundColor: pathname === item.path ? 'var(--color-gray-soft)' : 'transparent',
                                     borderRadius: 'var(--radius-md)',
-                                    fontWeight: location.pathname === item.path ? '600' : '400',
+                                    fontWeight: pathname === item.path ? '600' : '400',
                                     transition: 'var(--transition)'
                                 }}
                             >
@@ -100,7 +103,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <li>
                         {user ? (
                             <Link 
-                                to="/profile" 
+                                href="/profile" 
                                 onClick={onClose}
                                 style={{ 
                                     display: 'flex', 
@@ -108,10 +111,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                                     gap: '12px', 
                                     padding: '12px 16px', 
                                     textDecoration: 'none', 
-                                    color: location.pathname === '/profile' ? 'var(--color-terracotta)' : 'inherit',
-                                    backgroundColor: location.pathname === '/profile' ? 'var(--color-gray-soft)' : 'transparent',
+                                    color: pathname === '/profile' ? 'var(--color-terracotta)' : 'inherit',
+                                    backgroundColor: pathname === '/profile' ? 'var(--color-gray-soft)' : 'transparent',
                                     borderRadius: 'var(--radius-md)',
-                                    fontWeight: location.pathname === '/profile' ? '600' : '400',
+                                    fontWeight: pathname === '/profile' ? '600' : '400',
                                     transition: 'var(--transition)'
                                 }}
                             >
@@ -152,7 +155,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     </li>
                     <li>
                         <Link 
-                            to="/settings" 
+                            href="/settings" 
                             onClick={onClose}
                             style={{ 
                                 display: 'flex', 
@@ -160,10 +163,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 gap: '12px', 
                                 padding: '12px 16px', 
                                 textDecoration: 'none', 
-                                color: location.pathname === '/settings' ? 'var(--color-terracotta)' : 'inherit',
-                                backgroundColor: location.pathname === '/settings' ? 'var(--color-gray-soft)' : 'transparent',
+                                color: pathname === '/settings' ? 'var(--color-terracotta)' : 'inherit',
+                                backgroundColor: pathname === '/settings' ? 'var(--color-gray-soft)' : 'transparent',
                                 borderRadius: 'var(--radius-md)',
-                                fontWeight: location.pathname === '/settings' ? '600' : '400',
+                                fontWeight: pathname === '/settings' ? '600' : '400',
                                 transition: 'var(--transition)'
                             }}
                         >

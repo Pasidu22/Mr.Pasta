@@ -24,58 +24,125 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mr_pasta';
-mongoose.connect(MONGODB_URI)
-    .then(async () => {
-        console.log(`✅ Connected to MongoDB: ${MONGODB_URI.split('@')[1] || 'Local'}`);
-        
-        // Clean up legacy indexes if they exist
-        try {
-            const indexes = await User.collection.indexes();
-            if (indexes.find(index => index.name === 'firebaseId_1')) {
-                await User.collection.dropIndex('firebaseId_1');
-                console.log('🧹 Cleaned up legacy firebaseId index');
-            }
-        } catch (err) {
-            // Ignore if index doesn't exist
-        }
+const MOCK_PRODUCTS = [
+    { id: 1, name: 'Wheat Flour Pasta', category: 'Regular Pasta', price: '1000', rating: 4.8, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Quality wheat-based regular pasta.' },
+    { id: 2, name: 'Corn Flour Pasta', category: 'Regular Pasta', price: '1000', rating: 4.7, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Delicious corn flour based pasta.' },
+    { id: 3, name: 'Moringa Pasta', category: 'Regular Pasta', price: '1000', rating: 4.9, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nutritional moringa infused wheat pasta.' },
+    { id: 4, name: 'Nil Katarolu Pasta', category: 'Regular Pasta', price: '1000', rating: 4.8, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Unique nil katarolu flavored pasta.' },
+    { id: 5, name: 'Multi-Color Pasta', category: 'Regular Pasta', price: '1000', rating: 4.9, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Vibrant multi-colored pasta varieties.' },
+    { id: 6, name: 'Kurakkam Pasta', category: 'Regular Pasta', price: '1000', rating: 4.6, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Traditional kurakkan based wheat pasta.' },
+    { id: 7, name: 'Moringa Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: 4.9, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy rice flour pasta with moringa.' },
+    { id: 8, name: 'Nil Katarolu Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: 4.8, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nil katarolu flavored rice flour pasta.' },
+    { id: 9, name: 'Suwandal Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: 4.9, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Authentic suwandal rice flour pasta.' },
+    { id: 10, name: 'Kurakkan Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: 4.7, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nutritious kurakkan rice flour pasta.' },
+    { id: 11, name: 'Vegetable Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: 4.8, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Rice flour pasta blended with vegetables.' },
+    { id: 12, name: 'Gluten Free Suwandal Pasta', category: 'Gluten-Free', price: '1000', rating: 5.0, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Certified gluten-free suwandal rice pasta.' },
+    { id: 13, name: 'Gluten Free Vegetable Pasta', category: 'Gluten-Free', price: '1000', rating: 4.9, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy gluten-free vegetable pasta.' },
+    { id: 14, name: 'Gluten Free Jackfruit Pasta', category: 'Gluten-Free', price: '1000', rating: 5.0, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Premium gluten-free jackfruit flour pasta.' },
+    { id: 15, name: 'Jackfruit Flour Pasta', category: 'Gluten-Free', price: '1000', rating: 4.9, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Fiber-rich jackfruit flour pasta.' },
+    { id: 16, name: 'Jackfruit Moringa Pasta', category: 'Gluten-Free', price: '1000', rating: 4.8, reviewCount: 1, time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Jackfruit flour pasta with moringa.' }
+];
 
-        // Auto-seed products if the collection is empty
+const MOCK_SETTINGS = {
+    deliveryFee: 250,
+    whatsappNumber: '94729280262',
+    contactPhone: '+94 72 928 0262',
+    contactEmail: 'info@mrpasta.lk',
+    address: 'Colombo, Sri Lanka'
+};
+
+const MOCK_FEEDBACK = [
+    {
+        name: "Chaminda Perera",
+        location: "Colombo",
+        text: "The Rice Flour Pasta is a game changer! It tastes exactly like regular pasta but feels so much lighter.",
+        rating: 5,
+        approved: true
+    },
+    {
+        name: "Nilanthie Silva",
+        location: "Kandy",
+        text: "Actually surprised by the quality. The Jackfruit Flour pasta has a unique, delicious texture.",
+        rating: 5,
+        approved: true
+    },
+    {
+        name: "Tharindu Mendis",
+        location: "Galle",
+        text: "Finally found a brand that gets gluten-free pasta right. Texture is perfect. Kids love it!",
+        rating: 5,
+        approved: true
+    }
+];
+
+// Post-connection Setup
+const setupDatabase = async () => {
+    // Clean up legacy indexes if they exist
+    try {
+        const indexes = await User.collection.indexes();
+        if (indexes.find(index => index.name === 'firebaseId_1')) {
+            await User.collection.dropIndex('firebaseId_1');
+            console.log('🧹 Cleaned up legacy firebaseId index');
+        }
+    } catch (err) {
+        // Ignore if index doesn't exist
+    }
+
+    // Auto-seed products if the collection is empty
+    try {
+        const count = await Product.countDocuments();
+        if (count === 0) {
+            await Product.insertMany(MOCK_PRODUCTS);
+            console.log('🌱 Database auto-seeded with 16 products');
+        }
+    } catch (err) {
+        console.error('⚠️ Auto-seeding failed:', err);
+    }
+};
+
+// MongoDB Connection
+const MONGODB_URI_ATLAS = process.env.MONGODB_URI;
+const MONGODB_URI_LOCAL = 'mongodb://localhost:27017/mr_pasta';
+
+const connectDB = async () => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction && MONGODB_URI_ATLAS) {
+        console.log('🌐 Production environment detected. Connecting to MongoDB Atlas...');
         try {
-            const count = await Product.countDocuments();
-            if (count === 0) {
-                const initialProducts = [
-                    { id: 1, name: 'Wheat Flour Pasta', category: 'Regular Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Quality wheat-based regular pasta.' },
-                    { id: 2, name: 'Corn Flour Pasta', category: 'Regular Pasta', price: '1000', rating: '4.7', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Delicious corn flour based pasta.' },
-                    { id: 3, name: 'Moringa Pasta', category: 'Regular Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nutritional moringa infused wheat pasta.' },
-                    { id: 4, name: 'Nil Katarolu Pasta', category: 'Regular Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Unique nil katarolu flavored pasta.' },
-                    { id: 5, name: 'Multi-Color Pasta', category: 'Regular Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Vibrant multi-colored pasta varieties.' },
-                    { id: 6, name: 'Kurakkam Pasta', category: 'Regular Pasta', price: '1000', rating: '4.6', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Traditional kurakkan based wheat pasta.' },
-                    { id: 7, name: 'Moringa Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy rice flour pasta with moringa.' },
-                    { id: 8, name: 'Nil Katarolu Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nil katarolu flavored rice flour pasta.' },
-                    { id: 10, name: 'Kurakkan Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.7', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Nutritious kurakkan rice flour pasta.' },
-                    { id: 11, name: 'Vegetable Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Rice flour pasta blended with vegetables.' },
-                    { id: 9, name: 'Suwandal Rice Flour Pasta', category: 'Rice Flour Pasta', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Authentic suwandal rice flour pasta.' },
-                    { id: 12, name: 'Gluten Free Suwandal Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Certified gluten-free suwandal rice pasta.' },
-                    { id: 13, name: 'Gluten Free Vegetable Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Healthy gluten-free vegetable pasta.' },
-                    { id: 14, name: 'Gluten Free Jackfruit Pasta', category: 'Gluten-Free', price: '1000', rating: '5.0', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Premium gluten-free jackfruit flour pasta.' },
-                    { id: 15, name: 'Jackfruit Flour Pasta', category: 'Gluten-Free', price: '1000', rating: '4.9', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Fiber-rich jackfruit flour pasta.' },
-                    { id: 16, name: 'Jackfruit Moringa Pasta', category: 'Gluten-Free', price: '1000', rating: '4.8', time: '2-4 Days', image: '/assets/smaple_product.png', desc: 'Jackfruit flour pasta with moringa.' }
-                ];
-                await Product.insertMany(initialProducts);
-                console.log('🌱 Database auto-seeded with 16 products');
-            }
+            await mongoose.connect(MONGODB_URI_ATLAS);
+            console.log('✅ Connected to MongoDB Atlas');
+            await setupDatabase();
         } catch (err) {
-            console.error('⚠️ Auto-seeding failed:', err);
+            console.error('❌ MongoDB Atlas Connection Error:', err.message);
+            process.exit(1);
         }
-    })
-    .catch(err => {
-        console.error('❌ MongoDB Connection Error:', err.message);
-        if (err.message.includes('whitelist')) {
-            console.error('👉 TIP: Check your MongoDB Atlas IP Whitelist settings!');
+    } else {
+        if (MONGODB_URI_ATLAS) {
+            console.log('🔌 Local/Dev environment. Attempting connection to MongoDB Atlas...');
+            try {
+                await mongoose.connect(MONGODB_URI_ATLAS, { serverSelectionTimeoutMS: 5000 });
+                console.log('✅ Connected to MongoDB Atlas (Local Development)');
+                await setupDatabase();
+                return;
+            } catch (err) {
+                console.log('⚠️ Failed to connect to MongoDB Atlas (DNS/Network error). Falling back to Local MongoDB...');
+            }
         }
-    });
+        
+        console.log(`🏠 Connecting to Local MongoDB at: ${MONGODB_URI_LOCAL}`);
+        try {
+            await mongoose.connect(MONGODB_URI_LOCAL);
+            console.log('✅ Connected to Local MongoDB successfully');
+            await setupDatabase();
+        } catch (err) {
+            console.error('❌ Local MongoDB Connection Error:', err.message);
+            console.log('👉 TIP: Ensure your local MongoDB Service is started (e.g., net start MongoDB)!');
+        }
+    }
+};
+
+connectDB();
 
 // --- API Routes ---
 
@@ -346,10 +413,15 @@ app.post('/api/orders', async (req, res) => {
 // 5. Products Management
 app.get('/api/products', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            console.log('⚠️ MongoDB not connected. Returning local mock products...');
+            return res.json(MOCK_PRODUCTS);
+        }
         const products = await Product.find().sort({ id: 1 });
         res.json(products);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.warn('⚠️ Product query error, falling back to mock data:', err.message);
+        res.json(MOCK_PRODUCTS);
     }
 });
 
@@ -402,6 +474,10 @@ app.post('/api/products/:id/rate', async (req, res) => {
 // 6. Settings Management
 app.get('/api/settings', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            console.log('⚠️ MongoDB not connected. Returning local mock settings...');
+            return res.json(MOCK_SETTINGS);
+        }
         let settings = await Settings.findOne();
         if (!settings) {
             settings = new Settings({});
@@ -409,7 +485,8 @@ app.get('/api/settings', async (req, res) => {
         }
         res.json(settings);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.warn('⚠️ Settings query error, falling back to mock settings:', err.message);
+        res.json(MOCK_SETTINGS);
     }
 });
 
@@ -490,6 +567,12 @@ app.get('/api/feedback', async (req, res) => {
 app.get('/api/feedback/approved', async (req, res) => {
     const { limit, random } = req.query;
     try {
+        if (mongoose.connection.readyState !== 1) {
+            console.log('⚠️ MongoDB not connected. Returning local mock feedback...');
+            let items = [...MOCK_FEEDBACK];
+            if (limit) items = items.slice(0, parseInt(limit));
+            return res.json(items);
+        }
         let query = Feedback.find({ approved: true });
         
         if (random === 'true') {
@@ -503,7 +586,10 @@ app.get('/api/feedback/approved', async (req, res) => {
         const feedbacks = await query.sort({ createdAt: -1 });
         res.json(feedbacks);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.warn('⚠️ Feedback query error, falling back to mock feedback:', err.message);
+        let items = [...MOCK_FEEDBACK];
+        if (limit) items = items.slice(0, parseInt(limit));
+        res.json(items);
     }
 });
 

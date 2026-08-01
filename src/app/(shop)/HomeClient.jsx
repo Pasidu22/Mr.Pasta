@@ -1,28 +1,25 @@
-import React from 'react';
-import CategoryCarousel from '../components/CategoryCarousel';
-import ProductCard from '../components/ProductCard';
-import PromoCarousel from '../components/PromoCarousel';
-import OurPhilosophy from '../components/OurPhilosophy';
-import SustainabilityQuality from '../components/SustainabilityQuality';
-import SocialImpact from '../components/SocialImpact';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import VisionMission from '../components/VisionMission';
-import Testimonials from '../components/Testimonials';
-import SEO from '../components/SEO';
-import HeroSection from '../components/HeroSection';
+"use client";
 
-const Home = () => {
+import React from 'react';
+import CategoryCarousel from '../../components/CategoryCarousel';
+import ProductCard from '../../components/ProductCard';
+import PromoCarousel from '../../components/PromoCarousel';
+import OurPhilosophy from '../../components/OurPhilosophy';
+import SustainabilityQuality from '../../components/SustainabilityQuality';
+import SocialImpact from '../../components/SocialImpact';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import VisionMission from '../../components/VisionMission';
+import Testimonials from '../../components/Testimonials';
+import HeroSection from '../../components/HeroSection';
+
+const HomeClient = () => {
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', width: '100%', position: 'relative' }}>
             {/* Background Decorations */}
             <div className="blob blob-1 hide-mobile"></div>
             <div className="blob blob-2 hide-mobile"></div>
-            <SEO 
-                title="Home" 
-                description="The best premium pasta in Sri Lanka. From factory-direct wholesale to healthy gluten-free options, Mr. Pasta brings gourmet dining to your home while supporting cancer care."
-                keywords="Mr. Pasta, Sri Lanka, Premium Pasta, Gourmet, Healthy, Gluten-Free, Apeksha Hospital"
-            />
+            
             {/* Hidden H1 for SEO */}
             <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
                 Mr. Pasta - Premium Sri Lankan Pasta & Gourmet Dining
@@ -38,17 +35,19 @@ const Home = () => {
                 <div id="promo-offers">
                     <PromoCarousel />
                 </div>
-                
-                <OurPhilosophy />
+            </div>
+            
+            <OurPhilosophy />
 
-                <div id="sustainability">
-                    <SustainabilityQuality />
-                </div>
-                
-                <div id="social-impact">
-                    <SocialImpact />
-                </div>
+            <div id="sustainability" style={{ width: '100%' }}>
+                <SustainabilityQuality />
+            </div>
 
+            <div id="social-impact" style={{ width: '100%' }}>
+                <SocialImpact />
+            </div>
+
+            <div className="main-container">
                 <Testimonials />
 
                 {/* About Redirect Section */}
@@ -59,7 +58,7 @@ const Home = () => {
                         <p style={{ fontSize: '18px', color: '#666', maxWidth: '800px', lineHeight: '1.6', margin: '0 auto 24px' }}>
                             We are a premium pasta brand dedicated to creating value-added pasta products that combine delicious taste, better nutrition, and joy at the table.
                         </p>
-                        <Link to="/about" style={{
+                        <Link href="/about" style={{
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
@@ -82,4 +81,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default HomeClient;

@@ -1,12 +1,13 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Save, ArrowLeft, Loader2 } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { auth } from '../firebase';
-import { api } from '../utils/api';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { api } from '../../../utils/api';
 
-const Profile = () => {
-    const navigate = useNavigate();
+const ProfileClient = () => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [user, setUser] = useState(null);
@@ -18,14 +19,11 @@ const Profile = () => {
     });
     const [saveStatus, setSaveStatus] = useState('');
 
-    const location = useLocation();
-
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        if (params.get('edit') === 'true') {
+        if (searchParams.get('edit') === 'true') {
             setIsEditing(true);
         }
-    }, [location]);
+    }, [searchParams]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -35,7 +33,6 @@ const Profile = () => {
                     const userObj = JSON.parse(savedUser);
                     const currentUserId = userObj.userId || userObj.uid;
                     
-                    // Try fetching full profile from DB if not in local
                     const profile = await api.getUser(currentUserId);
                     if (profile) {
                         setUser(profile);
@@ -46,7 +43,6 @@ const Profile = () => {
                             address: profile.address || ''
                         });
                     } else {
-                        // If API doesn't return a profile, use the one from localStorage
                         setUser(userObj);
                         setFormData({
                             name: userObj.name || '',
@@ -57,17 +53,16 @@ const Profile = () => {
                     }
                 } catch (e) {
                     console.error("Error parsing user profile or fetching from API", e);
-                    navigate('/');
+                    router.push('/');
                 }
             } else {
-                // Not logged in - redirect to home and prompt login
                 window.dispatchEvent(new CustomEvent('open-auth-modal'));
-                navigate('/');
+                router.push('/');
             }
             setLoading(false);
         };
         fetchUserProfile();
-    }, [navigate]);
+    }, [router]);
 
     const handleSave = () => {
         const savedUser = localStorage.getItem('mr_pasta_user');
@@ -90,8 +85,6 @@ const Profile = () => {
         setSaveStatus('Profile updated successfully!');
         
         setTimeout(() => setSaveStatus(''), 3000);
-        
-        // Sync with any components listening to mr_pasta_user (like Navbar)
         window.dispatchEvent(new Event('storage'));
     };
 
@@ -109,7 +102,7 @@ const Profile = () => {
         <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
                 <button 
-                    onClick={() => navigate(-1)}
+                    onClick={() => router.back()}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '50%' }}
                     className="hover-scale"
                 >
@@ -181,7 +174,7 @@ const Profile = () => {
                         <input 
                             type="email" 
                             value={formData.email} 
-                            disabled={true} // Email typically doesn't change easily in simple auth flows
+                            disabled={true}
                             style={{...inputStyle, background: '#f9f9f9', cursor: 'not-allowed'}}
                         />
                         <span style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>Email is managed by your account settings</span>
@@ -297,4 +290,4 @@ const inputStyle = {
     transition: 'border-color 0.2s'
 };
 
-export default Profile;
+export default ProfileClient;

@@ -1,11 +1,13 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { Heart, ArrowLeft, Loader2, ShoppingBasket } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
-import { api } from '../utils/api';
+import { useRouter } from 'next/navigation';
+import ProductCard from '../../../components/ProductCard';
+import { api } from '../../../utils/api';
 
-const Favorites = () => {
-    const navigate = useNavigate();
+const FavoritesClient = () => {
+    const router = useRouter();
     const [favoriteProducts, setFavoriteProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -25,7 +27,6 @@ const Favorites = () => {
     useEffect(() => {
         loadFavorites();
 
-        // Listen for updates from other components
         window.addEventListener('storage', loadFavorites);
         return () => window.removeEventListener('storage', loadFavorites);
     }, []);
@@ -42,7 +43,7 @@ const Favorites = () => {
         <div style={{ padding: '40px', width: '100%', animation: 'fadeIn 0.5s ease-out' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
                 <button 
-                    onClick={() => navigate(-1)}
+                    onClick={() => router.back()}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '50%' }}
                     className="hover-scale"
                 >
@@ -78,7 +79,7 @@ const Favorites = () => {
                         When you see something you like, tap the heart icon to save it for later.
                     </p>
                     <button 
-                        onClick={() => navigate('/products')}
+                        onClick={() => router.push('/products')}
                         style={{
                             padding: '12px 32px',
                             background: 'var(--color-terracotta)',
@@ -114,4 +115,4 @@ const Favorites = () => {
     );
 };
 
-export default Favorites;
+export default FavoritesClient;

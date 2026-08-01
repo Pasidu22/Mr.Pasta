@@ -1,12 +1,14 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Calendar, Clock, ChevronRight, Package, ArrowLeft, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../utils/api';
+import { useRouter } from 'next/navigation';
+import { api } from '../../../utils/api';
 
-const Orders = () => {
+const OrdersClient = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -36,7 +38,7 @@ const Orders = () => {
         switch (s) {
             case 'pending': return { bg: '#f1f5f9', text: '#64748b' };
             case 'confirmed': return { bg: '#fff7ed', text: '#ea580c' };
-            case 'processing': return { bg: '#fff7ed', text: '#ea580c' }; // Keep for backward compatibility
+            case 'processing': return { bg: '#fff7ed', text: '#ea580c' };
             case 'shipped': return { bg: '#f5f3ff', text: '#7c3aed' };
             case 'delivered': return { bg: '#f0fdf4', text: '#16a34a' };
             case 'cancelled': return { bg: '#fef2f2', text: '#dc2626' };
@@ -71,7 +73,7 @@ const Orders = () => {
                 <h1 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '16px' }}>No orders yet</h1>
                 <p style={{ color: '#666', marginBottom: '32px' }}>Your delicious pasta journey starts here!</p>
                 <button 
-                    onClick={() => navigate('/products')}
+                    onClick={() => router.push('/products')}
                     style={{
                         padding: '14px 32px',
                         background: 'var(--color-terracotta)',
@@ -93,7 +95,7 @@ const Orders = () => {
         <div style={{ padding: '40px', maxWidth: '900px', margin: '0 auto', animation: 'fadeIn 0.5s ease-out' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
                 <button 
-                    onClick={() => navigate(-1)}
+                    onClick={() => router.back()}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px' }}
                     className="hover-scale"
                 >
@@ -105,7 +107,6 @@ const Orders = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {orders.map((order) => {
                     const statusStyle = getStatusStyle(order.status);
-                    const isLocalOnly = !order._id;
 
                     return (
                         <div key={order.id || order._id} style={{
@@ -145,32 +146,32 @@ const Orders = () => {
                                 </div>
                             </div>
 
-                        <div style={{ marginBottom: '20px' }}>
-                            {order.items && order.items.map((item, idx) => {
-                                const displayItemTotal = item.itemTotal || (item.price * item.quantity);
-                                return (
-                                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
-                                        <span style={{ color: '#444' }}>
-                                            <span style={{ fontWeight: '700', color: 'var(--color-terracotta)' }}>{item.quantity}x</span> {item.name}
-                                        </span>
-                                        <span style={{ fontWeight: '600' }}>Rs. {displayItemTotal.toLocaleString()}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                            <div style={{ marginBottom: '20px' }}>
+                                {order.items && order.items.map((item, idx) => {
+                                    const displayItemTotal = item.itemTotal || (item.price * item.quantity);
+                                    return (
+                                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
+                                            <span style={{ color: '#444' }}>
+                                                <span style={{ fontWeight: '700', color: 'var(--color-terracotta)' }}>{item.quantity}x</span> {item.name}
+                                            </span>
+                                            <span style={{ fontWeight: '600' }}>Rs. {displayItemTotal.toLocaleString()}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #f5f5f5' }}>
-                            <div style={{ color: '#666', fontSize: '14px' }}>Total Amount Paid</div>
-                            <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--color-terracotta)' }}>
-                                Rs. {order.total.toLocaleString()}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #f5f5f5' }}>
+                                <div style={{ color: '#666', fontSize: '14px' }}>Total Amount Paid</div>
+                                <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--color-terracotta)' }}>
+                                    Rs. {order.total.toLocaleString()}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                );
-            })}
+                    );
+                })}
             </div>
         </div>
     );
 };
 
-export default Orders;
+export default OrdersClient;

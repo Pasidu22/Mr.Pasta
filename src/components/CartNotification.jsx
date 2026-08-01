@@ -1,6 +1,8 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, ArrowRight, X, ChevronRight } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingBag, ChevronRight } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { api } from '../utils/api';
 
 const CartNotification = () => {
@@ -9,16 +11,14 @@ const CartNotification = () => {
     const [cartTotals, setCartTotals] = useState({ count: 0, price: 0 });
     const [products, setProducts] = useState([]);
     const productsRef = useRef([]);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const pathname = usePathname();
 
-    // Sync ref with state
     useEffect(() => {
         productsRef.current = products;
     }, [products]);
 
     const calculateTotals = (productList) => {
-        const cart = JSON.parse(localStorage.getItem('mr_pasta_cart') || '{}');
+        const cart = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('mr_pasta_cart') || '{}') : {};
         let totalCount = 0;
         let totalPrice = 0;
 
@@ -26,7 +26,6 @@ const CartNotification = () => {
         if (!Array.isArray(listToUse) || listToUse.length === 0) return { count: 0, price: 0 };
 
         Object.keys(cart).forEach(cartItemId => {
-            // Robust ID comparison (handle string vs number)
             const product = listToUse.find(p => p.id.toString() === cartItemId.toString());
             if (product) {
                 totalCount += cart[cartItemId];
@@ -37,7 +36,6 @@ const CartNotification = () => {
     };
 
     useEffect(() => {
-        // Initial load
         api.getProducts().then(data => {
             setProducts(data);
             setCartTotals(calculateTotals(data));
@@ -46,10 +44,7 @@ const CartNotification = () => {
         const handleCartAdded = (event) => {
             const { product } = event.detail;
             setAddedItem(product);
-            
-            // Re-calculate totals using the latest products from ref
             setCartTotals(calculateTotals());
-
             setMessageVisible(true);
             const timer = setTimeout(() => setMessageVisible(false), 3000);
             return () => clearTimeout(timer);
@@ -68,8 +63,7 @@ const CartNotification = () => {
         };
     }, []);
 
-    // Don't show the persistent bar on cart, checkout or admin pages
-    const isHiddenRoute = location.pathname === '/cart' || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
+    const isHiddenRoute = pathname === '/cart' || pathname === '/checkout' || pathname.startsWith('/admin');
 
     if (isHiddenRoute || cartTotals.count === 0) return null;
 
@@ -86,9 +80,8 @@ const CartNotification = () => {
             flexDirection: 'column',
             alignItems: 'center',
             gap: '12px',
-            pointerEvents: 'none' // Allow clicking through the container
+            pointerEvents: 'none'
         }}>
-            {/* Temporary Message Label */}
             {messageVisible && (
                 <div style={{
                     background: 'rgba(255, 92, 0, 0.95)',
@@ -106,7 +99,6 @@ const CartNotification = () => {
                 </div>
             )}
 
-            {/* Persistent Cart Summary Bar */}
             <div style={{
                 width: '100%',
                 background: 'var(--color-deep-black)',

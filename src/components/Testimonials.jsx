@@ -3,7 +3,7 @@ import { Star, Quote } from 'lucide-react';
 import { api } from '../utils/api';
 
 const Testimonials = ({ staticReviews }) => {
-    const [feedbacks, setFeedbacks] = useState(staticReviews || []);
+    const [feedbacks, setFeedbacks] = useState(Array.isArray(staticReviews) ? staticReviews : []);
     const [loading, setLoading] = useState(!staticReviews);
 
     const fallbackReviews = [
@@ -28,7 +28,7 @@ const Testimonials = ({ staticReviews }) => {
     ];
 
     useEffect(() => {
-        if (!staticReviews) {
+        if (!staticReviews || !Array.isArray(staticReviews)) {
             fetchRandomFeedbacks();
         } else {
             setFeedbacks(staticReviews);
@@ -38,7 +38,7 @@ const Testimonials = ({ staticReviews }) => {
     const fetchRandomFeedbacks = async () => {
         try {
             const data = await api.getApprovedFeedback(3, true);
-            setFeedbacks(data.length > 0 ? data : fallbackReviews);
+            setFeedbacks(Array.isArray(data) && data.length > 0 ? data : fallbackReviews);
         } catch (err) {
             setFeedbacks(fallbackReviews);
         } finally {
