@@ -3,13 +3,7 @@
  */
 
 const getApiUrl = () => {
-    if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) {
-        return process.env.NEXT_PUBLIC_API_URL;
-    }
-    if (typeof process !== 'undefined' && process.env.VITE_API_URL) {
-        return process.env.VITE_API_URL;
-    }
-    return '';
+    return process.env.NEXT_PUBLIC_API_URL || process.env.VITE_API_URL || '';
 };
 
 const API_BASE = `${getApiUrl().replace(/\/$/, '')}/api`;
