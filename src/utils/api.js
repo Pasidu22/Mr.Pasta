@@ -137,6 +137,10 @@ export const api = {
         const response = await fetch(`${API_BASE}/products/${productId}`, {
             method: 'DELETE'
         });
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || err.message || 'Failed to delete product');
+        }
         return response.json();
     },
 

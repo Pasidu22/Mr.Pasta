@@ -437,7 +437,7 @@ app.post('/api/products', async (req, res) => {
 
 app.put('/api/products/:id', async (req, res) => {
     try {
-        const product = await Product.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+        const product = await Product.findOneAndUpdate({ id: parseInt(req.params.id) }, req.body, { new: true });
         res.json(product);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -446,7 +446,7 @@ app.put('/api/products/:id', async (req, res) => {
 
 app.delete('/api/products/:id', async (req, res) => {
     try {
-        await Product.deleteOne({ id: req.params.id });
+        await Product.deleteOne({ id: parseInt(req.params.id) });
         res.json({ message: 'Product deleted' });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -456,7 +456,7 @@ app.delete('/api/products/:id', async (req, res) => {
 app.post('/api/products/:id/rate', async (req, res) => {
     const { rating: newRating } = req.body;
     try {
-        const product = await Product.findOne({ id: req.params.id });
+        const product = await Product.findOne({ id: parseInt(req.params.id) });
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         const currentTotal = (product.rating || 5.0) * (product.reviewCount || 1);

@@ -336,9 +336,11 @@ const ProductsTab = ({ products, onUpdate }) => {
         try {
             if (editingProduct) {
                 await api.updateProduct(editingProduct.id, editingProduct);
+                alert('Product updated successfully!');
                 setEditingProduct(null);
             } else {
                 await api.addProduct(newProduct);
+                alert('Product added successfully!');
                 setNewProduct({ id: Date.now(), name: '', price: '', rating: '5.0', category: 'Regular Pasta', desc: '', image: '/assets/sample_product.png' });
             }
             onUpdate();
@@ -350,8 +352,14 @@ const ProductsTab = ({ products, onUpdate }) => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete this product?')) {
-            await api.deleteProduct(id);
-            onUpdate();
+            try {
+                await api.deleteProduct(id);
+                alert('Product deleted successfully!');
+                onUpdate();
+            } catch (err) {
+                console.error("Delete product error:", err);
+                alert(err.message || 'Failed to delete product');
+            }
         }
     };
 
