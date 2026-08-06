@@ -3,7 +3,11 @@
  */
 
 const getApiUrl = () => {
-    return process.env.NEXT_PUBLIC_API_URL || process.env.VITE_API_URL || '';
+    let url = process.env.NEXT_PUBLIC_API_URL || process.env.VITE_API_URL || '';
+    if (url && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('//')) {
+        url = `https://${url}`;
+    }
+    return url;
 };
 
 const API_BASE = `${getApiUrl().replace(/\/$/, '')}/api`;
