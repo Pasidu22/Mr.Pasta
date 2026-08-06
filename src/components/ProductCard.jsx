@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Heart, Star, Plus } from 'lucide-react';
 import { api } from '../utils/api';
 
-const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time, image, desc }) => {
+const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time, image, desc, inStock = true }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [currentRating, setCurrentRating] = useState(parseFloat(initialRating) || 5.0);
     const [isRatingOpen, setIsRatingOpen] = useState(false);
@@ -122,10 +122,30 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
                         aspectRatio: '1',
                         objectFit: 'cover',
                         borderRadius: '16px',
-                        transition: 'transform 0.5s ease'
+                        transition: 'transform 0.5s ease',
+                        filter: inStock ? 'none' : 'grayscale(0.6)'
                     }}
                     onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&w=800&q=80' }}
                 />
+                {!inStock && (
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '12px',
+                        left: '12px',
+                        background: 'rgba(239, 68, 68, 0.9)',
+                        color: 'white',
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        textTransform: 'uppercase',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        backdropFilter: 'blur(4px)',
+                        letterSpacing: '0.5px'
+                    }}>
+                        Out of Stock
+                    </div>
+                )}
                 <button 
                     onClick={toggleFavorite}
                     style={{
@@ -225,9 +245,10 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
                     </div>
 
                     <button 
-                        onClick={addToCart}
+                        onClick={inStock ? addToCart : (e) => { e.preventDefault(); e.stopPropagation(); }}
+                        disabled={!inStock}
                         style={{
-                            background: '#FF5C00',
+                            background: inStock ? '#FF5C00' : '#d1d5db',
                             color: 'white',
                             border: 'none',
                             borderRadius: '50%',
@@ -236,11 +257,11 @@ const ProductCard = ({ id, name, price, rating: initialRating, reviewCount, time
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            cursor: 'pointer',
-                            boxShadow: '0 4px 12px rgba(255, 92, 0, 0.3)',
+                            cursor: inStock ? 'pointer' : 'not-allowed',
+                            boxShadow: inStock ? '0 4px 12px rgba(255, 92, 0, 0.3)' : 'none',
                             transition: 'var(--transition)'
-                        }} className="hover-scale">
-                        <Plus size={24} strokeWidth={3} />
+                        }} className={inStock ? "hover-scale" : ""}>
+                        <Plus size={24} strokeWidth={3} style={{ opacity: inStock ? 1 : 0.5 }} />
                     </button>
                 </div>
             </div>

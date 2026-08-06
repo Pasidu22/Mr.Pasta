@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
     time: { type: String, default: '2-4 Days' },
     image: { type: String, required: true },
     desc: { type: String, required: true },
+    inStock: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now }
 });
 

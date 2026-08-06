@@ -305,7 +305,7 @@ const ProductsTab = ({ products, settings, onUpdate }) => {
     const categoriesList = settings?.categories || ['Regular Pasta', 'Rice Flour Pasta', 'Gluten-Free'];
     const defaultCategory = categoriesList[0] || 'Regular Pasta';
     
-    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', rating: '5.0', category: defaultCategory, desc: '', image: '/assets/sample_product.png' });
+    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', rating: '5.0', category: defaultCategory, desc: '', image: '/assets/sample_product.png', inStock: true });
 
     useEffect(() => {
         if (settings?.categories?.length > 0 && !newProduct.name) {
@@ -354,7 +354,7 @@ const ProductsTab = ({ products, settings, onUpdate }) => {
             } else {
                 await api.addProduct(newProduct);
                 alert('Product added successfully!');
-                setNewProduct({ id: Date.now(), name: '', price: '', rating: '5.0', category: defaultCategory, desc: '', image: '/assets/sample_product.png' });
+                setNewProduct({ id: Date.now(), name: '', price: '', rating: '5.0', category: defaultCategory, desc: '', image: '/assets/sample_product.png', inStock: true });
             }
             onUpdate();
         } catch (err) { 
@@ -373,6 +373,21 @@ const ProductsTab = ({ products, settings, onUpdate }) => {
                 console.error("Delete product error:", err);
                 alert(err.message || 'Failed to delete product');
             }
+        }
+    };
+
+    const handleToggleStock = async (product) => {
+        try {
+            const updatedStockStatus = product.inStock !== false ? false : true;
+            await api.updateProduct(product.id, {
+                ...product,
+                inStock: updatedStockStatus
+            });
+            alert(`Product marked as ${updatedStockStatus ? 'In Stock' : 'Out of Stock'}!`);
+            onUpdate();
+        } catch (err) {
+            console.error("Toggle stock error:", err);
+            alert(err.message || 'Failed to update stock status');
         }
     };
 
@@ -405,7 +420,27 @@ const ProductsTab = ({ products, settings, onUpdate }) => {
                                     <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-terracotta)', fontWeight: '700' }}>Rs. {p.price}</p>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '8px' }}>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <button 
+                                    onClick={() => handleToggleStock(p)} 
+                                    title={p.inStock !== false ? "Mark Out of Stock" : "Mark In Stock"}
+                                    style={{ 
+                                        padding: '8px 12px', 
+                                        borderRadius: '10px', 
+                                        border: '1px solid ' + (p.inStock !== false ? '#dcfce7' : '#fee2e2'), 
+                                        background: p.inStock !== false ? '#f0fdf4' : '#fef2f2', 
+                                        color: p.inStock !== false ? '#15803d' : '#b91c1c', 
+                                        cursor: 'pointer',
+                                        fontSize: '11px',
+                                        fontWeight: '700',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px'
+                                    }}
+                                >
+                                    {p.inStock !== false ? <CheckCircle size={14} /> : <XCircle size={14} />}
+                                    {p.inStock !== false ? 'In Stock' : 'Out of Stock'}
+                                </button>
                                 <button onClick={() => {
                                     setEditingProduct(p);
                                     window.scrollTo({ top: 0, behavior: 'smooth' });
