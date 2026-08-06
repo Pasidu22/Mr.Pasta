@@ -28,9 +28,7 @@ const HomeClient = () => {
             <HeroSection />
 
             <div className="main-container">
-                <div className="desktop-hide" style={{ marginBottom: '16px' }}>
-                    <CategoryCarousel />
-                </div>
+
 
                 <div id="promo-offers">
                     <PromoCarousel />
