@@ -61,41 +61,41 @@ const HeroSection = () => {
 
       {/* Loading Screen Overlay */}
       <div style={{
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          width: '100%',
-          height: '100%',
-          background: '#0d0d0d',
-          zIndex: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '24px',
-          opacity: videoLoaded ? 0 : 1,
-          transition: 'opacity 1s cubic-bezier(0.25, 1, 0.5, 1)',
-          pointerEvents: 'none'
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        background: '#0d0d0d',
+        zIndex: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '24px',
+        opacity: videoLoaded ? 0 : 1,
+        transition: 'opacity 1s cubic-bezier(0.25, 1, 0.5, 1)',
+        pointerEvents: 'none'
       }}>
-          <div style={{
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              border: '3px solid rgba(255, 92, 0, 0.1)',
-              borderTopColor: '#FF5C00',
-              animation: 'spin-custom 1s linear infinite',
-          }} />
-          <div style={{
-              color: 'rgba(255,255,255,0.9)',
-              fontSize: '12px',
-              fontWeight: '800',
-              letterSpacing: '4px',
-              textTransform: 'uppercase',
-              animation: 'pulse-custom 2s ease-in-out infinite',
-          }}>
-              Gourmet Kitchen Loading...
-          </div>
+        <div style={{
+          position: 'relative',
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%',
+          border: '3px solid rgba(255, 92, 0, 0.1)',
+          borderTopColor: '#FF5C00',
+          animation: 'spin-custom 1s linear infinite',
+        }} />
+        <div style={{
+          color: 'rgba(255,255,255,0.9)',
+          fontSize: '12px',
+          fontWeight: '800',
+          letterSpacing: '4px',
+          textTransform: 'uppercase',
+          animation: 'pulse-custom 2s ease-in-out infinite',
+        }}>
+          Mr.Pasta loading ...
+        </div>
       </div>
 
       {/* Background Video Loop */}
