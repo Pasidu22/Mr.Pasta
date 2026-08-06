@@ -16,6 +16,7 @@ const HeroSection = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fade, setFade] = useState(true);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,6 +30,13 @@ const HeroSection = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVideoLoaded(true);
+    }, 3500); // 3.5s safety fallback
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section
       className="hero-premium-v4 full-bleed-v4"
@@ -40,12 +48,64 @@ const HeroSection = () => {
         backgroundPosition: 'center'
       }}
     >
+      <style>{`
+        @keyframes spin-custom {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse-custom {
+            0%, 100% { opacity: 0.4; transform: scale(0.97); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+      `}</style>
+
+      {/* Loading Screen Overlay */}
+      <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          background: '#0d0d0d',
+          zIndex: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '24px',
+          opacity: videoLoaded ? 0 : 1,
+          transition: 'opacity 1s cubic-bezier(0.25, 1, 0.5, 1)',
+          pointerEvents: 'none'
+      }}>
+          <div style={{
+              position: 'relative',
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              border: '3px solid rgba(255, 92, 0, 0.1)',
+              borderTopColor: '#FF5C00',
+              animation: 'spin-custom 1s linear infinite',
+          }} />
+          <div style={{
+              color: 'rgba(255,255,255,0.9)',
+              fontSize: '12px',
+              fontWeight: '800',
+              letterSpacing: '4px',
+              textTransform: 'uppercase',
+              animation: 'pulse-custom 2s ease-in-out infinite',
+          }}>
+              Gourmet Kitchen Loading...
+          </div>
+      </div>
+
       {/* Background Video Loop */}
       <video
         autoPlay
         loop
         muted
         playsInline
+        onPlay={() => setVideoLoaded(true)}
+        onLoadedData={() => setVideoLoaded(true)}
         style={{
           position: 'absolute',
           top: '0',
