@@ -1,8 +1,10 @@
 import HomeClient from './HomeClient';
 
 export const metadata = {
-  title: 'Home | Mr. Pasta - Premium Sri Lankan Pasta & Gourmet Dining',
-  description: 'The best premium pasta in Sri Lanka. From factory-direct wholesale to healthy gluten-free options, Mr. Pasta brings gourmet dining to your home while supporting cancer care.',
+  title: {
+    absolute: 'Mr. Pasta | Premium Sri Lankan Pasta & Gourmet Dining'
+  },
+  description: "Experience gourmet dining at home with Sri Lanka's premium value-added pasta. Shop our healthy, gluten-free, Moringa, and local varieties while supporting cancer care.",
 };
 
 export default function Page() {

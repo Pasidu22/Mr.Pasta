@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import ProductsClient from './ProductsClient';
 
 export const metadata = {
-  title: 'Our Menu',
-  description: 'Browse our premium range of traditional and healthy pasta. High quality, factory-direct prices in Sri Lanka.',
+  title: 'Premium Pasta Menu | Wholesale & Retail Prices',
+  description: "Browse our premium range of traditional and healthy pasta in Sri Lanka. Buy Moringa, Nil Katarolu, Gluten-Free, and Rice Flour varieties at factory-direct wholesale prices.",
 };
 
 export default function Page() {

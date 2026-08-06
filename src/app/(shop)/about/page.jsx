@@ -3,8 +3,8 @@ import WhoWeAre from '../../../components/WhoWeAre';
 import VisionMission from '../../../components/VisionMission';
 
 export const metadata = {
-  title: 'About Our Journey',
-  description: "Learn about Mr. Pasta's mission to provide premium, healthy, and accessible pasta while supporting social causes like cancer care at Apeksha Hospital.",
+  title: 'Our Story & Cancer Care Mission',
+  description: "Learn about Mr. Pasta's mission to make premium Sri Lankan pasta while donating 10% of all online profits to cancer care at Apeksha Hospital.",
 };
 
 export default function Page() {
