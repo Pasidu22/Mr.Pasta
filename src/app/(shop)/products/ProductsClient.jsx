@@ -91,18 +91,18 @@ const ProductsClient = () => {
             paddingTop: 'var(--header-height, 80px)', 
             paddingBottom: '40px' 
         }}>
-            <div className="main-container" style={{ paddingTop: '40px' }}>
-                <div style={{ marginBottom: '48px', textAlign: 'center' }}>
+            <div className="main-container" style={{ paddingTop: '16px' }}>
+                <div style={{ marginBottom: '20px', textAlign: 'center' }}>
                     <h1 style={{ 
-                        fontSize: 'clamp(32px, 8vw, 42px)', 
+                        fontSize: 'clamp(28px, 6vw, 36px)', 
                         fontWeight: '800', 
-                        marginBottom: '16px', 
-                        letterSpacing: '-1.5px',
+                        marginBottom: '8px', 
+                        letterSpacing: '-1px',
                         fontFamily: 'var(--font-accent)'
                     }}>
                         Our Full Menu
                     </h1>
-                    <p style={{ color: '#666', fontSize: '18px', maxWidth: '600px', margin: '0 auto', marginBottom: '32px' }}>
+                    <p style={{ color: '#666', fontSize: '15px', maxWidth: '600px', margin: '0 auto', marginBottom: '16px' }}>
                         Explore our diverse range of premium pasta, from traditional wheat to healthy gluten-free options.
                     </p>
 
@@ -111,9 +111,9 @@ const ProductsClient = () => {
                         justifyContent: isMobile ? 'flex-start' : 'center', 
                         gap: '12px', 
                         overflowX: 'auto',
-                        padding: '12px 4px',
+                        padding: '8px 4px',
                         width: '100%',
-                        marginBottom: '40px',
+                        marginBottom: '24px',
                         WebkitOverflowScrolling: 'touch'
                     }}>
                         <div style={{
@@ -151,14 +151,14 @@ const ProductsClient = () => {
                 </div>
 
             {filteredCategories.map(category => (
-                <section key={category} style={{ marginBottom: '64px', animation: 'fadeInUp 0.6s ease-out forwards' }}>
+                <section key={category} style={{ marginBottom: '40px', animation: 'fadeInUp 0.6s ease-out forwards' }}>
                     <div style={{ 
                         display: 'flex', 
                         alignItems: 'center', 
-                        gap: '24px', 
-                        marginBottom: '32px',
+                        gap: '16px', 
+                        marginBottom: '20px',
                         borderBottom: '1px solid var(--color-gray-border)',
-                        paddingBottom: '16px'
+                        paddingBottom: '8px'
                     }}>
                         <h2 style={{ 
                             fontSize: '28px', 
