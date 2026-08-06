@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Flame } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import bgImage from '../assets/hero_pasta_creative.png';
+import bgImage from '../assets/bg_image.png';
 
 const HeroSection = () => {
   const router = useRouter();
