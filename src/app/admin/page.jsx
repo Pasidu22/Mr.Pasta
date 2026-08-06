@@ -151,7 +151,7 @@ const Admin = () => {
             }}>
                 <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
                     {activeTab === 'orders' && <OrdersTab orders={orders} onUpdate={fetchData} />}
-                    {activeTab === 'products' && <ProductsTab products={products} onUpdate={fetchData} />}
+                    {activeTab === 'products' && <ProductsTab products={products} settings={settings} onUpdate={fetchData} />}
                     {activeTab === 'feedbacks' && <FeedbacksTab feedbacks={feedbacks} onUpdate={fetchData} />}
                     {activeTab === 'settings' && <SettingsTab settings={settings} onUpdate={fetchData} />}
                 </div>
@@ -298,10 +298,23 @@ const OrdersTab = ({ orders, onUpdate }) => {
     );
 };
 
-const ProductsTab = ({ products, onUpdate }) => {
+const ProductsTab = ({ products, settings, onUpdate }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [editingProduct, setEditingProduct] = useState(null);
-    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', rating: '5.0', category: 'Regular Pasta', desc: '', image: '/assets/sample_product.png' });
+    
+    const categoriesList = settings?.categories || ['Regular Pasta', 'Rice Flour Pasta', 'Gluten-Free'];
+    const defaultCategory = categoriesList[0] || 'Regular Pasta';
+    
+    const [newProduct, setNewProduct] = useState({ id: Date.now(), name: '', price: '', rating: '5.0', category: defaultCategory, desc: '', image: '/assets/sample_product.png' });
+
+    useEffect(() => {
+        if (settings?.categories?.length > 0 && !newProduct.name) {
+            setNewProduct(prev => ({
+                ...prev,
+                category: settings.categories[0]
+            }));
+        }
+    }, [settings]);
     const [isMinimized, setIsMinimized] = useState(false);
     const fileInputRef = React.useRef(null);
 
@@ -341,7 +354,7 @@ const ProductsTab = ({ products, onUpdate }) => {
             } else {
                 await api.addProduct(newProduct);
                 alert('Product added successfully!');
-                setNewProduct({ id: Date.now(), name: '', price: '', rating: '5.0', category: 'Regular Pasta', desc: '', image: '/assets/sample_product.png' });
+                setNewProduct({ id: Date.now(), name: '', price: '', rating: '5.0', category: defaultCategory, desc: '', image: '/assets/sample_product.png' });
             }
             onUpdate();
         } catch (err) { 
@@ -428,9 +441,9 @@ const ProductsTab = ({ products, onUpdate }) => {
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <input required placeholder="Product Name" value={editingProduct?.name || newProduct.name} onChange={e => editingProduct ? setEditingProduct({...editingProduct, name: e.target.value}) : setNewProduct({...newProduct, name: e.target.value})} style={{ flex: 1.5, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }} />
                                 <select value={editingProduct?.category || newProduct.category} onChange={e => editingProduct ? setEditingProduct({...editingProduct, category: e.target.value}) : setNewProduct({...newProduct, category: e.target.value})} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #eee' }}>
-                                    <option>Regular Pasta</option>
-                                    <option>Rice Flour Pasta</option>
-                                    <option>Gluten-Free</option>
+                                    {categoriesList.map(cat => (
+                                        <option key={cat}>{cat}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div style={{ display: 'flex', gap: '10px' }}>
@@ -509,15 +522,19 @@ const SettingsTab = ({ settings, onUpdate }) => {
         bankDetails: settings?.bankDetails || '',
         contactPhone: settings?.contactPhone || '+94 72 928 0262',
         contactEmail: settings?.contactEmail || 'info@mrpasta.lk',
-        address: settings?.address || 'Colombo, Sri Lanka'
+        address: settings?.address || 'Colombo, Sri Lanka',
+        categories: settings?.categories || ['Regular Pasta', 'Rice Flour Pasta', 'Gluten-Free']
     });
+
+    const [newCategoryName, setNewCategoryName] = useState('');
 
     useEffect(() => { 
         if (settings && Object.keys(settings).length > 0) {
             setFormData(prev => ({
                 ...prev,
                 ...settings,
-                deliveryChargesEnabled: settings.deliveryChargesEnabled !== false
+                deliveryChargesEnabled: settings.deliveryChargesEnabled !== false,
+                categories: settings.categories || ['Regular Pasta', 'Rice Flour Pasta', 'Gluten-Free']
             }));
         }
     }, [settings]);
@@ -529,6 +546,37 @@ const SettingsTab = ({ settings, onUpdate }) => {
             onUpdate();
             alert('Settings saved!');
         } catch (err) { alert('Save failed'); }
+    };
+
+    const handleAddCategory = () => {
+        if (!newCategoryName.trim()) return;
+        if (formData.categories.includes(newCategoryName.trim())) {
+            alert('Category already exists!');
+            return;
+        }
+        setFormData({
+            ...formData,
+            categories: [...formData.categories, newCategoryName.trim()]
+        });
+        setNewCategoryName('');
+    };
+
+    const handleDeleteCategory = (catToDelete) => {
+        if (window.confirm(`Are you sure you want to delete the category "${catToDelete}"?`)) {
+            setFormData({
+                ...formData,
+                categories: formData.categories.filter(c => c !== catToDelete)
+            });
+        }
+    };
+
+    const handleUpdateCategory = (index, newName) => {
+        const updated = [...formData.categories];
+        updated[index] = newName;
+        setFormData({
+            ...formData,
+            categories: updated
+        });
     };
 
     const handleSeed = async () => {
@@ -590,6 +638,49 @@ const SettingsTab = ({ settings, onUpdate }) => {
                         <label style={{ fontSize: '14px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} /> Business Address</label>
                         <textarea value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #eee', minHeight: '80px' }} />
                     </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                        <label style={{ fontSize: '14px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Package size={16} /> Product Categories
+                        </label>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: '#fafafa', padding: '16px', borderRadius: '20px', border: '1px solid #eee' }}>
+                            {formData.categories?.map((cat, index) => (
+                                <div key={index} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                    <input 
+                                        type="text" 
+                                        value={cat} 
+                                        onChange={e => handleUpdateCategory(index, e.target.value)} 
+                                        style={{ flex: 1, padding: '10px 14px', borderRadius: '10px', border: '1px solid #eee', fontSize: '14px', background: 'white' }} 
+                                    />
+                                    <button 
+                                        type="button" 
+                                        onClick={() => handleDeleteCategory(cat)} 
+                                        style={{ padding: '10px', borderRadius: '10px', border: '1px solid #fee2e2', background: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                            
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '10px', borderTop: '1px solid #eee', paddingTop: '16px' }}>
+                                <input 
+                                    type="text" 
+                                    placeholder="New Category Name" 
+                                    value={newCategoryName} 
+                                    onChange={e => setNewCategoryName(e.target.value)} 
+                                    style={{ flex: 1, padding: '10px 14px', borderRadius: '10px', border: '1px solid #eee', fontSize: '14px', background: 'white' }} 
+                                />
+                                <button 
+                                    type="button" 
+                                    onClick={handleAddCategory} 
+                                    style={{ padding: '10px 20px', background: 'var(--color-deep-black)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: '700', cursor: 'pointer', fontSize: '14px' }}
+                                >
+                                    Add Category
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <button type="submit" style={{ marginTop: '12px', padding: '16px', background: 'var(--color-terracotta)', color: 'white', borderRadius: '16px', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                         <Save size={20} /> Save Configuration
                     </button>

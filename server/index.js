@@ -482,6 +482,9 @@ app.get('/api/settings', async (req, res) => {
         if (!settings) {
             settings = new Settings({});
             await settings.save();
+        } else if (!settings.categories || settings.categories.length === 0) {
+            settings.categories = ['Regular Pasta', 'Rice Flour Pasta', 'Gluten-Free'];
+            await settings.save();
         }
         res.json(settings);
     } catch (err) {

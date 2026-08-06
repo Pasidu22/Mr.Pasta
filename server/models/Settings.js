@@ -8,6 +8,7 @@ const settingsSchema = new mongoose.Schema({
     contactPhone: { type: String, default: '+94 72 928 0262' },
     contactEmail: { type: String, default: 'info@mrpasta.lk' },
     address: { type: String, default: 'Colombo, Sri Lanka' },
+    categories: { type: [String], default: ['Regular Pasta', 'Rice Flour Pasta', 'Gluten-Free'] },
     updatedAt: { type: Date, default: Date.now }
 });
 
