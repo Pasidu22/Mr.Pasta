@@ -11,8 +11,8 @@ import happyIcon from '../assets/happy.png';
 const Footer = () => {
     const [settings, setSettings] = useState({
         contactPhone: '+94 11 234 5678',
-        contactEmail: 'hello@mrpasta.com',
-        address: 'Sri Lanka (Headquarters)'
+        contactEmail: 'info@mrpasta.lk',
+        address: 'Sri Lanka'
     });
 
     useEffect(() => {
@@ -110,7 +110,7 @@ const Footer = () => {
                     <ul style={{ listStyle: 'none', padding: 0 }}>
                         <li style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center', color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>
                             <MapPin size={18} color="var(--color-terracotta)" />
-                            {settings.address || 'Sri Lanka (Headquarters)'}
+                            {settings.address || 'Sri Lanka'}
                         </li>
                         <li style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center', color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>
                             <Phone size={18} color="var(--color-terracotta)" />
@@ -121,7 +121,7 @@ const Footer = () => {
                         <li style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center', color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>
                             <Mail size={18} color="var(--color-terracotta)" />
                             <a href={`mailto:${settings.contactEmail}`} style={{ color: 'inherit', textDecoration: 'none', transition: '0.3s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}>
-                                {settings.contactEmail || 'hello@mrpasta.com'}
+                                {settings.contactEmail || 'info@mrpasta.lk'}
                             </a>
                         </li>
                     </ul>
