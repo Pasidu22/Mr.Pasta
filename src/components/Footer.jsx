@@ -145,7 +145,7 @@ const Footer = () => {
                         © 2026 Mr. Pasta. All rights reserved. ISO 22000 Certified.
                     </p>
                     <p style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.25)', fontWeight: '500', letterSpacing: '0.5px' }}>
-                        This creative product designed and developed by <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>Smart AI Solutions</span>
+                        This creative product designed and developed by <a href="https://smartaisolutions.lk" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255, 255, 255, 0.4)', textDecoration: 'underline', transition: '0.2s' }} onMouseEnter={e => e.target.style.color = 'white'} onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.4)'}>Smart AI Solutions</a>
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '24px' }}>
